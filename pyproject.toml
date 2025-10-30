@@ -1,0 +1,32 @@
+[project]
+name = "finalproject"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "emaged",email = "emieldejonghswemer@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "flask (>=3.1.2,<4.0.0)",
+    "flask-session (>=0.8.0,<0.9.0)",
+    "djlint (>=1.36.4,<2.0.0)",
+    "flask-login (>=0.6.3,<0.7.0)",
+    "flask-sqlalchemy (>=3.1.1,<4.0.0)",
+    "pytest (>=8.4.2,<9.0.0)",
+    "coverage (>=7.11.0,<8.0.0)"
+]
+
+[tool.poetry]
+packages = [{include = "finalproject", from = "src"}]
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[dependency-groups]
+dev = [
+    "python-dotenv (>=1.1.1,<2.0.0)",
+    "black (>=25.9.0,<26.0.0)",
+    "pytest (>=8.4.2,<9.0.0)"
+]

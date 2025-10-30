@@ -1,0 +1,43 @@
+{% extends "layout.html" %}
+{% block title %}
+    Register
+{% endblock title %}
+{% block main %}
+    <form class="form-signin" action="{{ url_for("register") }}" method="post">
+        <div class="mb-3">
+            <input autocomplete="off"
+                   autofocus
+                   class="form-control mx-auto w-auto"
+                   name="username"
+                   placeholder="Username"
+                   type="text"
+                   required>
+        </div>
+        <div class="mb-3">
+            <ul style="display: table; text-align: left; margin: 0 auto;">
+                <li>Eight or more characters</li>
+                <li>One uppercase letter</li>
+                <li>One lowercase letter</li>
+                <li>One number</li>
+                <li>One special character</li>
+            </ul>
+        </div>
+        <div class="mb-3">
+            <input class="form-control mx-auto w-auto"
+                   name="password"
+                   placeholder="Password"
+                   type="password"
+                   required
+                   pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$">
+        </div>
+        <div class="mb-3">
+            <input class="form-control mx-auto w-auto"
+                   name="confirmation"
+                   placeholder="Confirm password"
+                   type="password"
+                   required
+                   pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$">
+        </div>
+        <button class="b autn btn-primary" type="submit">Register</button>
+    </form>
+{% endblock main %}
