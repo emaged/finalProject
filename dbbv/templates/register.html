@@ -2,8 +2,10 @@
 {% block title %}
     Register
 {% endblock title %}
-{% block main %}
-    <form class="form-signin" action="{{ url_for("register") }}" method="post">
+{% block main_auth %}
+    <form class="form-signin"
+          action="{{ url_for('auth.register') }}"
+          method="post">
         <div class="mb-3">
             <input autocomplete="off"
                    autofocus
@@ -38,6 +40,6 @@
                    required
                    pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$">
         </div>
-        <button class="b autn btn-primary" type="submit">Register</button>
+        <button class="btn btn-primary" type="submit">Register</button>
     </form>
-{% endblock main %}
+{% endblock main_auth %}

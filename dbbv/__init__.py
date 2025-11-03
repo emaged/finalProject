@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask
+from flask import Flask, session
 
 def create_app(test_config=None):
     # create and configure app
@@ -26,19 +26,34 @@ def create_app(test_config=None):
         os.makedirs(app.instance_path)
     except OSError:
         pass
+    
+    from flask_session import Session
+    Session(app)
         
     # initialise db
     from . import db
     db.init_app(app)
     
+    # import & register blueprints
     from dbbv.routes import auth
     app.register_blueprint(auth.bp)
-    
+    from dbbv.routes import sqlite
+    app.register_blueprint(sqlite.bp)
+    from dbbv.routes import alchemy
+    app.register_blueprint(alchemy.bp)
+    from dbbv.routes import files
+    app.register_blueprint(files.bp)
         
     # a simple page that says hello
-    @app.route('/hello')
-    def hello():
-        return 'Hello, World!'
+
+    @app.route('/set/')
+    def set():
+        session['key'] = 'value'
+        return 'ok'
+
+    @app.route('/get/')
+    def get():
+        return session.get('key', 'not set')
 
     return app
 

@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+{% block title %}
+    Files
+{% endblock title %}
+{% block links %}
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/sidebar.css') }}">
+{% endblock links %}
+{% block sidebar %}
+    {% include "sidebar.html" %}
+{% endblock sidebar %}
+{% block main_classes %}
+    border col-md-9 ms-sm-auto col-lg-10 p-2 px-md-4
+{% endblock main_classes %}
+{% block main %}
+    <div class="col">
+        <h1>Files</h1>
+        <p>This is the files page. Use the sidebar to navigate through files and schema's.</p>
+        <div class="mb-3">
+            <form method="post" enctype="multipart/form-data">
+                <label for="formFile" class="form-label">Default file input example</label>
+                <input class="form-control" type="file" id="formFile" name="file">
+                <button type="submit" class="btn btn-primary mt-2">Upload</button>
+            </form>
+        </div>
+    </div>
+{% endblock main %}

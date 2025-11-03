@@ -1,0 +1,54 @@
+{% extends "layout.html" %}
+{% block title %}
+    Account
+{% endblock title %}
+{% block main_classes %}
+    container py-5 text-center
+{% endblock main_classes %}
+{% block main %}
+    <div class="mb-3">
+        <h2 class="mb-3">Account: {{ user }}</h2>
+        <h3 class="mb-3">Change Password</h3>
+        <form action="{{ url_for('auth.account') }}" method="post">
+            <div class="mb-3">
+                <input autofocus
+                       autocomplete="off"
+                       class="form-control mx-auto w-auto"
+                       name="old"
+                       type="password"
+                       placeholder="Old password"
+                       required>
+            </div>
+            <div class="mb-3">
+                <ul style="display: table; text-align: left; margin: 0 auto;">
+                    <li>Eight or more characters</li>
+                    <li>One uppercase letter</li>
+                    <li>One lowercase letter</li>
+                    <li>One number</li>
+                    <li>One special character</li>
+                </ul>
+            </div>
+            <div class="mb-3">
+                <input autofocus
+                       autocomplete="off"
+                       class="form-control mx-auto w-auto"
+                       name="new"
+                       type="password"
+                       placeholder="New Password"
+                       required>
+            </div>
+            <div class="mb-3">
+                <input autofocus
+                       autocomplete="off"
+                       class="form-control mx-auto w-auto"
+                       name="confirm"
+                       type="password"
+                       placeholder="Confirmation"
+                       required>
+            </div>
+            <div class="mb-3">
+                <button class="btn btn-primary" type="submit">Submit</button>
+            </div>
+        </form>
+    </div>
+{% endblock main %}

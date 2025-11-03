@@ -12,6 +12,7 @@ def get_db():
             detect_types=sqlite3.PARSE_DECLTYPES
         )
         g.db.row_factory = sqlite3.Row
+        g.db.set_trace_callback(print)
 
     return g.db
 
@@ -41,6 +42,7 @@ sqlite3.register_converter(
     "timestamp", lambda v: datetime.fromisoformat(v.decode())
 )
 
+
 def init_app(app):
     app.teardown_appcontext(close_db)
     app.cli.add_command(init_db_command)
@@ -51,3 +53,11 @@ def query_db(query, args=(), one=False):
     rv = cur.fetchall()
     cur.close()
     return (rv[0] if rv else None) if one else rv
+
+
+def execute_db(query, args=()):
+    db = get_db()
+    cur = db.execute(query, args)
+    db.commit()
+    cur.close()
+

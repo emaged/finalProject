@@ -2,6 +2,28 @@
 {% block title %}
     Homepage
 {% endblock title %}
+{% block links %}
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/sidebar.css') }}">
+{% endblock links %}
+{% block sidebar %}
+    {% include "sidebar.html" %}
+{% endblock sidebar %}
+{% block main_classes %}
+    border col-md-9 ms-sm-auto col-lg-10 p-2 px-md-4
+{% endblock main_classes %}
 {% block main %}
-    some text
+    {% if files %}
+        <ul>
+            {% for file in files %}<li>{{ file }}</li>{% endfor %}
+        </ul>
+    {% else %}
+        <div class="col">
+            <h1>Welcome to DB Browser Viewer</h1>
+            <p>
+                This is the homepage. Use the sidebar to navigate through files and schema's.
+                Upload a file to display a list of available databases!
+            </p>
+        </div>
+    {% endif %}
 {% endblock main %}
