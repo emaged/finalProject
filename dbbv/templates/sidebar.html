@@ -6,23 +6,43 @@
     </a>
     <ul class="list-unstyled ps-0">
         <li class="mb-1">
-            <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
+            <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 "
+                    id="file-route-btn"
                     data-bs-toggle="collapse"
                     data-bs-target="#home-collapse"
+                    data-file-route="{{ url_for('files.select') }}"
                     aria-expanded="true">Files</button>
             <div class="collapse show" id="home-collapse">
                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                     {% for file in files %}
                         <li>
-                            <a href="#"
-                               class="link-body-emphasis d-inline-flex text-decoration-none rounded">{{ file }}</a>
+                            <div class="d-flex justify-content-between align-items-center w-100">
+                                {% set display_file = file %}
+                                {% if file|length > 15 %}
+                                    {% set display_file = file[:10] ~ ".." ~ split_ext(file) %}
+                                {% endif %}
+                                <button class="btn d-inline-flex file-btn text-truncate px-1 m-1 {% if db_selected == file %}active{% endif %}"
+                                        data-file="{{ file }}">{{ display_file }}</button>
+                                <div class="ms-auto d-flex gap-1">
+                                    <a href="{{ url_for('files.download_file', name=file) }}"
+                                       class="btn btn-outline-secondary file-download d-inline-flex align-items-center">
+                                        <i class="bi bi-file-earmark-arrow-down d-inline-flex"></i>
+                                    </a>
+                                    <button class="btn btn-outline-secondary file-btn-2 d-inline-flex align-items-center"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#removeFile"
+                                            data-file="{{ file }}">
+                                        <i class="bi bi-file-earmark-excel d-inline-flex"></i>
+                                    </button>
+                                </div>
+                            </div>
                         </li>
                     {% endfor %}
                 </ul>
             </div>
         </li>
         <li class="mb-1">
-            <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
+            <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 "
                     data-bs-toggle="collapse"
                     data-bs-target="#dashboard-collapse"
                     aria-expanded="false">Schema's</button>

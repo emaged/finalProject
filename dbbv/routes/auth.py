@@ -39,10 +39,16 @@ def login():
 
         # Remember which user has logged in
         session["user_id"] = rows[0]["id"]
+        session["username"] = rows[0]["username"]
         session["user_folder"] = os.path.join(current_app.config["UPLOAD_FOLDER"], rows[0]["username"])
-        print(session["user_folder"])
         os.makedirs(session["user_folder"], exist_ok=True)
+        session["db_selected"] = None
         # Redirect user to home page
+        if request.form.get("remember"):
+            session.permanent = True 
+        else:
+            session.permanent = False
+        
         return redirect(url_for('sqlite.index'))
 
     # User reached route via GET (as by clicking a link or via redirect)
@@ -101,7 +107,6 @@ def register():
         else:
             return redirect(url_for("auth.login"))
         
-        print(error)
         flash(error, "danger")
 
         return render_template('register.html')
@@ -151,12 +156,10 @@ def load_logged_in_user():
 
     if user_id is None:
         g.user = None
-        print("No User Logged in")
     else:
         g.user = get_db().execute(
             'SELECT * FROM users WHERE id = ?', (user_id,)
         ).fetchone()
-        print(f"Logged in user: {g.user['username']}")
 
 
 

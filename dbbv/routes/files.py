@@ -1,4 +1,6 @@
 import os
+from os import listdir
+from os.path import isfile, join
 from flask import(
     Blueprint, flash, g, redirect, render_template, request, 
     session, url_for, current_app, send_from_directory
@@ -13,6 +15,7 @@ bp = Blueprint('files', __name__)
 @bp.route('/upload', methods=['GET', 'POST'])
 @login_required
 def files():
+    files = [file for file in listdir(session["user_folder"]) if isfile(join(session["user_folder"], file))]
     if request.method == 'POST':
         # check if the post request has the file part
         if 'file' not in request.files:
@@ -32,13 +35,35 @@ def files():
                 return redirect(request.url)
             file.save(filepath)
             return redirect(url_for('files.download_file', name=filename))
+        else:
+            flash("file (extension) error, wrong file extension")
 
-        return render_template("files.html")
+        return render_template("files.html", files=files, db_selected=session["db_selected"])
     else:
-        return render_template("files.html")
+        return render_template("files.html", files=files, db_selected=session["db_selected"])
 
 
-@bp.route('/download/<name>', methods=['GET', 'POST'])
+@bp.route('/download/<name>', methods=['GET'])
 @login_required
 def download_file(name):
-        return send_from_directory(session["user_folder"], name)
+    print(name)
+    return send_from_directory(session["user_folder"], name)
+
+@bp.route('/select', methods=['POST'])
+@login_required
+def select():
+    data = request.form.get("selected_file")
+    #print(data)
+    session["db_selected"] = data
+    return ("", 204)
+     
+@bp.route('/remove', methods=['POST'])
+@login_required
+def removeFile():
+    filename = request.form.get("remove")
+    filepath = os.path.join(session["user_folder"], filename)
+    if filepath:
+        os.remove(filepath)
+    else:
+        print("The file does not exist")
+    return redirect(url_for('sqlite.index'))

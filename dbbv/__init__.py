@@ -43,17 +43,9 @@ def create_app(test_config=None):
     app.register_blueprint(alchemy.bp)
     from dbbv.routes import files
     app.register_blueprint(files.bp)
-        
-    # a simple page that says hello
-
-    @app.route('/set/')
-    def set():
-        session['key'] = 'value'
-        return 'ok'
-
-    @app.route('/get/')
-    def get():
-        return session.get('key', 'not set')
+    
+    from dbbv.routes.helpers import split_ext
+    app.jinja_env.globals.update(split_ext=split_ext)
 
     return app
 

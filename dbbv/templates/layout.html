@@ -18,7 +18,9 @@
           crossorigin="anonymous">
     <link rel="icon"
           type="image/x-icon"
-          href="{{ url_for('static', filename='img/favicon1.ico') }}">
+          href="{{ url_for('static', filename='img/logo_final.png') }}">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     {% block links %}
     {% endblock links %}
   </head>
@@ -26,7 +28,13 @@
     <header>
       <nav class="bg-dark border navbar navbar-expand-md navbar-dark">
         <div class="container-fluid">
-          <a class="navbar-brand" href="{{ url_for('sqlite.index') }}">DBBV</a>
+          <a class="navbar-brand" href="{{ url_for('sqlite.index') }}">
+            <img src="{{ url_for('static', filename='img/logo_final.png') }}"
+                 alt="Logo"
+                 width="30"
+                 height="30"
+                 class="me-0">
+          DBBV</a>
           <button aria-controls="navbar"
                   aria-expanded="false"
                   aria-label="Toggle navigation"
@@ -34,7 +42,7 @@
                   data-bs-target="#navbar"
                   data-bs-toggle="collapse"
                   type="button">
-            <span class="navbar-toggler-icon"></span>
+            <span class="navbar-toggler-icon">hello</span>
           </button>
           <div class="collapse navbar-collapse" id="navbar">
             {% if session["user_id"] %}
@@ -102,6 +110,36 @@
         {% endif %}
       </div>
     </div>
+    <!-- Modal -->
+    <div class="modal fade"
+         id="removeFile"
+         tabindex="-1"
+         aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Remove File</h1>
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+          </div>
+          <div class="modal-body">Are you sure you want to delete this file?</div>
+          <div class="modal-footer">
+            <form action="{{ url_for('files.removeFile') }}" method="post">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button id="removeFileBtn"
+                      type="submit"
+                      class="btn btn-danger"
+                      name="remove"
+                      value="">Remove</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- footer -->
     <footer>
       <footer class="py-2 my-2">
         <p class="text-center text-body-secondary">© 2025 DBBV, Inc</p>
@@ -110,5 +148,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
             crossorigin="anonymous"></script>
+    <script src="{{ url_for('static', filename='js/sidebar.js') }}"></script>
   </body>
 </html>

@@ -14,9 +14,31 @@
 {% endblock main_classes %}
 {% block main %}
     {% if files %}
-        <ul>
-            {% for file in files %}<li>{{ file }}</li>{% endfor %}
-        </ul>
+        <div class="col">
+            <div class="row mb-3">
+                <form method="post" action="{{ url_for('sqlite.index') }}">
+                    <div class="mb-3">
+                        <label for="sqlInput" class="form-label">Enter SQL Query</label>
+                        <textarea class="form-control font-monospace"
+                                  id="sqlInput"
+                                  name="query"
+                                  rows="4"
+                                  placeholder="SELECT * FROM users LIMIT 10;"></textarea>
+                    </div>
+                    <div class="d-inline-flex gap-2">
+                        <button type="submit" name="action" value="run" class="btn btn-primary">Run Query</button>
+                        <button type="button"
+                                class="btn btn-danger"
+                                data-bs-toggle="modal"
+                                data-bs-target="#clearQueries">Clear Queries</button>
+                    </div>
+                </form>
+            </div>
+            <div class="row mb-3">
+                <div class="col border">some text</div>
+                <div class="col border">more text</div>
+            </div>
+        </div>
     {% else %}
         <div class="col">
             <h1>Welcome to DB Browser Viewer</h1>
@@ -26,4 +48,29 @@
             </p>
         </div>
     {% endif %}
+    <!-- Modal -->
+    <div class="modal fade"
+         id="clearQueries"
+         tabindex="-1"
+         aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Clear Queries</h1>
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                </div>
+                <div class="modal-body">Are you sure you want to clear your Queries?</div>
+                <div class="modal-footer">
+                    <form action="{{ url_for('sqlite.index') }}" method="post">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                        <button type="submit" class="btn btn-danger" name="action" value="clear">Yes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock main %}
