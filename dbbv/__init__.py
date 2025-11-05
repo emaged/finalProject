@@ -39,10 +39,15 @@ def create_app(test_config=None):
     app.register_blueprint(auth.bp)
     from dbbv.routes import sqlite
     app.register_blueprint(sqlite.bp)
+    
+    from dbbv.routes.sqlite import close_custom_db
+    app.teardown_appcontext(close_custom_db)
+    
     from dbbv.routes import alchemy
     app.register_blueprint(alchemy.bp)
     from dbbv.routes import files
     app.register_blueprint(files.bp)
+    
     
     from dbbv.routes.helpers import split_ext
     app.jinja_env.globals.update(split_ext=split_ext)
