@@ -10,53 +10,67 @@
   {% include "sidebar.html" %}
 {% endblock sidebar %}
 {% block main_classes %}
-  border col-md-9 ms-sm-auto col-lg-10 p-2 px-md-4 overflow-auto
+  border col-md-9 ms-sm-auto col-lg-10 p-2 px-md-4 d-flex flex-column
 {% endblock main_classes %}
 {% block main %}
   {% if files %}
-    <div class="col mb-3">
-      <div class="row mb-3">
-        <form method="post" action="{{ url_for('sqlite.index') }}">
-          <div class="mb-3">
-            <label for="sqlInput" class="form-label">Enter SQL Query</label>
-            <textarea class="form-control font-monospace"
-                      id="sqlInput"
-                      name="query"
-                      rows="4"
-                      placeholder="SELECT * FROM users LIMIT 10;"></textarea>
-          </div>
-          <div class="d-inline-flex gap-2 mb-3">
-            <button type="submit" name="action" value="run" class="btn btn-primary">Run Query</button>
-            <button type="button"
-                    class="btn btn-danger"
-                    data-bs-toggle="modal"
-                    data-bs-target="#clearQueries">Clear Queries</button>
-          </div>
-        </form>
-      </div>
-      <div class="row g-3 p-2 border rounded">
-        {% if paired_queries %}
-          {% for query, query_result in paired_queries %}
-            <div class="col mb-2 mt-2">
-              <div class="card">
-                <h5 class="card-header d-flex justify-content-between align-items-start">
-                  <pre><code>{{ query }}</code></pre>
-                  <button type="button"
-                          class="btn-close btn-remove-query"
-                          value="{{ loop.index0 }}"
-                          data-file-route="{{ url_for('sqlite.index') }}"
-                          aria-label="Close"></button>
-                </h5>
-                <div class="card-body overflow-auto" style="max-height: 750px;">
-                  <pre class="card-text">{{ query_result }}</pre>
-                </div>
+    <div class="row mb-3">
+      <!-- Top row: SQL query form -->
+      <form method="post" action="{{ url_for('sqlite.index') }}">
+        <div class="mb-3">
+          <label for="sqlInput" class="form-label">Enter SQL Query</label>
+          <textarea class="form-control font-monospace"
+                    id="sqlInput"
+                    name="query"
+                    rows="4"
+                    placeholder="SELECT * FROM users LIMIT 10;"
+                    required></textarea>
+        </div>
+        <div class="d-inline-flex gap-2 mb-3">
+          <button type="submit" name="action" value="run" class="btn btn-primary">Run Query</button>
+          <button type="button"
+                  class="btn btn-danger"
+                  data-bs-toggle="modal"
+                  data-bs-target="#clearQueries">Clear Queries</button>
+        </div>
+      </form>
+    </div>
+    <!-- Bottom row: query results -->
+    <div class="row g-3 p-2 border rounded queryInput">
+      {% if paired_queries %}
+        {% for query, headers, query_result in paired_queries %}
+          <div class="col mb-2 mt-2">
+            <div class="card">
+              <h5 class="card-header d-flex justify-content-between align-items-start">
+                <pre class=""><code>{{ query }}</code></pre>
+                <button type="button"
+                        class="btn-close btn-remove-query"
+                        value="{{ loop.index0 }}"
+                        data-file-route="{{ url_for('sqlite.index') }}"
+                        aria-label="Close"></button>
+              </h5>
+              <div class="card-body table-responsive">
+                <table class="table table-striped table bordered table-sm mb-0">
+                  <thead class="table-dark">
+                    <tr>
+                      {% for col in headers %}<th>{{ col }}</th>{% endfor %}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for row in query_result %}
+                      <tr>
+                        {% for col in row %}<td>{{ row[col] }}</td>{% endfor %}
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
               </div>
             </div>
-          {% endfor %}
-        {% else %}
-          <div class="col mb-2 mt-2">Run a query to see the result here!</div>
-        {% endif %}
-      </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="col mb-2 mt-2">Run a query to see the result here!</div>
+      {% endif %}
     </div>
   {% else %}
     <div class="col">

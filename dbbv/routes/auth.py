@@ -43,6 +43,8 @@ def login():
         session["user_folder"] = os.path.join(current_app.config["UPLOAD_FOLDER"], rows[0]["username"])
         os.makedirs(session["user_folder"], exist_ok=True)
         session["db_selected"] = None
+        session['paired_queries'] = []
+        session['schemas'] = []
         # Redirect user to home page
         if request.form.get("remember"):
             session.permanent = True 

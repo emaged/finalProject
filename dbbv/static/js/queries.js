@@ -1,7 +1,6 @@
 document.querySelectorAll('.btn-remove-query').forEach(btn => {
     btn.addEventListener('click', async () => {
         const removeIndex = btn.value;
-        console.log(removeIndex);
         const formData = new FormData();    
         formData.append("remove", removeIndex)
 
@@ -15,6 +14,9 @@ document.querySelectorAll('.btn-remove-query').forEach(btn => {
         } else {
             alert("Failed to remove query on server.");
         }
+        const emptyList = await response.text()
+        if (emptyList === "1")
+           document.querySelector(".queryInput").innerHTML = "You deleted the last query"
     });
     
 

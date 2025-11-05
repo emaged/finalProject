@@ -15,7 +15,6 @@ bp = Blueprint('files', __name__)
 @bp.route('/upload', methods=['GET', 'POST'])
 @login_required
 def files():
-    files = [file for file in listdir(session["user_folder"]) if isfile(join(session["user_folder"], file))]
     if request.method == 'POST':
         # check if the post request has the file part
         if 'file' not in request.files:
@@ -34,13 +33,12 @@ def files():
                 flash('A file with that name already exists. Please rename it and try again.')
                 return redirect(request.url)
             file.save(filepath)
-            return redirect(url_for('files.download_file', name=filename))
+            print(filepath)
         else:
             flash("file (extension) error, wrong file extension")
 
-        return render_template("files.html", files=files, db_selected=session["db_selected"])
-    else:
-        return render_template("files.html", files=files, db_selected=session["db_selected"])
+    files = [file for file in listdir(session["user_folder"]) if isfile(join(session["user_folder"], file))]
+    return render_template("files.html", files=files, db_selected=session["db_selected"], schemas=session['schemas'])
 
 
 @bp.route('/download/<name>', methods=['GET'])
