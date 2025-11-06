@@ -12,13 +12,21 @@ bp = Blueprint('sqlite', __name__)
 @bp.route('/', methods=['GET', 'POST'])
 @login_required
 def index():
+    user_folder = session.get('user_folder')
+    if not user_folder or not os.path.isdir(user_folder):
+        # create user folder if it doesnt exist
+        user_folder = os.path.join(current_app.config['UPLOAD_FOLDER'], session.get('username'))
+        os.makedirs(user_folder, exist_ok=True)
+        session['user_folder'] = user_folder
+
     files = [file for file in listdir(session['user_folder']) if isfile(join(session["user_folder"], file)) and allowed_file(file)]
-    if session['db_selected']:
+    if session.get('db_selected'):
         session['schemas'] = query_db_sqlite("SELECT * FROM sqlite_master")
+    
     if request.method == 'POST':
         # Run the query
         if request.form.get('action') == 'run' and request.form.get('query'):
-            if not session['db_selected']:
+            if not session.get('db_selected'):
                 flash("No database selected")
                 return redirect(url_for('sqlite.index'))
             query = request.form.get('query')
@@ -42,10 +50,8 @@ def index():
                 return '1'
             else:
                 return '0'
-        
-    if request.method == 'GET':
-        pass
 
+    # replace with session.get in production code for safety 
     return render_template('index.html', files=files, db_selected=session['db_selected'],
                            paired_queries=session['paired_queries'], schemas=session['schemas']) 
 

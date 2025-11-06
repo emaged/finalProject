@@ -14,6 +14,13 @@ bp = Blueprint('files', __name__)
 @bp.route('/upload', methods=['GET', 'POST'])
 @login_required
 def files():
+    # check user folder for safety
+    user_folder = session.get('user_folder')
+    if not user_folder:
+        user_folder = os.path.join(current_app.config['UPLOAD_FOLDER'], session.get('username'))
+        os.makedirs(user_folder, exist_ok=True)
+        session['user_folder'] = user_folder
+
     if request.method == 'POST':
         # check if the post request has the file part
         if 'file' not in request.files:
@@ -27,12 +34,14 @@ def files():
             return redirect(request.url)
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
+            if not filename:
+                flash('invalid filename')
+                return redirect(request.url)
             filepath = os.path.join(session["user_folder"], filename)
             if os.path.exists(filepath):
                 flash('A file with that name already exists. Please rename it and try again.')
                 return redirect(request.url)
             file.save(filepath)
-            print(filepath)
         else:
             flash("file (extension) error, wrong file extension")
 
@@ -43,8 +52,19 @@ def files():
 @bp.route('/download/<name>', methods=['GET'])
 @login_required
 def download_file(name):
-    print(name)
-    return send_from_directory(session["user_folder"], name)
+    filename = secure_filename(name)
+    user_folder = session.get('user_folder')
+    if not filename or not user_folder:
+        flash("Invalid download request")
+        return redirect(url_for('sqlite.index'))
+   
+    # ensure the file exists inside user folder
+    filepath = os.path.join(user_folder, filename)
+    if not os.path.exists(filepath):
+        flash("File not found")
+        return redirect(url_for('sqlite.index'))
+    return send_from_directory(user_folder, filename)
+
 
 @bp.route('/select', methods=['POST'])
 @login_required
@@ -63,17 +83,21 @@ def select():
 @bp.route('/remove', methods=['POST'])
 @login_required
 def removeFile():
-    filename = request.form.get("remove")
+    filename = secure_filename(request.form.get("remove"))
+    if not filename:
+        flash("No File specified")
+        return redirect(url_for('sqlite.index'))
+
     filepath = os.path.join(session["user_folder"], filename)
     if filepath:
         os.remove(filepath)
-        if filename is session["db_selected"]:
+        if filename is session.get("db_selected"):
             session["db_selected"] = None
             session['schemas'] = None
             flash("selected db deleted")
-
     else:
-        print("The file does not exist")
+        flash("The file does not exist")
+
     files = [file for file in listdir(session['user_folder']) if isfile(join(session["user_folder"], file))]
     if not files:
         flash("Last file deleted")
