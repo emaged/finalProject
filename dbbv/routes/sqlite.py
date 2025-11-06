@@ -1,20 +1,18 @@
 import os
 from os import listdir
-from os.path import isfile, join, abspath
+from os.path import isfile, join
 from flask import(
     Blueprint, flash, g, redirect, render_template, request, session, url_for
 )
 import sqlite3
-    
-from dbbv.db import get_db, query_db, execute_db
-from dbbv.routes.helpers import apology, login_required
+from dbbv.routes.helpers import apology, login_required, allowed_file
 
 bp = Blueprint('sqlite', __name__)
 
 @bp.route('/', methods=['GET', 'POST'])
 @login_required
 def index():
-    files = [file for file in listdir(session['user_folder']) if isfile(join(session["user_folder"], file))]
+    files = [file for file in listdir(session['user_folder']) if isfile(join(session["user_folder"], file)) and allowed_file(file)]
     if session['db_selected']:
         session['schemas'] = query_db_sqlite("SELECT * FROM sqlite_master")
     if request.method == 'POST':
@@ -25,7 +23,7 @@ def index():
                 return redirect(url_for('sqlite.index'))
             query = request.form.get('query')
             try:
-                query_result = query_db_sqlite(query)
+                query_result = combined_exec_db_sqlite(query, commit=True)
                 header, formatted_result = format_query_result(query_result)
             except Exception as e:
                 flash(e)
@@ -87,6 +85,20 @@ def execute_db_sqlite(query, args=()):
     cur = db.execute(query, args)
     db.commit()
     cur.close()
+
+def combined_exec_db_sqlite(query, args=(), one=False, commit=False):
+    db = get_db_sqlite()
+    cur = db.execute(query, args)
+    result = None
+    
+    if query.strip().lower().startswith("select"):
+        rows = cur.fetchall()
+        result = (rows[0] if rows else None) if one else rows
+    else:
+        if commit:
+            db.commit()
+    cur.close()
+    return result
 
 def format_query_result(query_result):
     if not query_result:

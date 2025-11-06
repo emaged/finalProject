@@ -23,7 +23,7 @@
                                 {% endif %}
                                 <button class="btn d-inline-flex file-btn text-truncate px-1 m-1 {% if db_selected == file %}active{% endif %}"
                                         data-file="{{ file }}">{{ display_file }}</button>
-                                <div class="ms-auto d-flex gap-1">
+                                <div class="d-inline-flex gap-1">
                                     <a href="{{ url_for('files.download_file', name=file) }}"
                                        class="btn btn-outline-secondary file-download d-inline-flex align-items-center">
                                         <i class="bi bi-file-earmark-arrow-down d-inline-flex"></i>

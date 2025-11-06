@@ -38,7 +38,7 @@ def files():
         else:
             flash("file (extension) error, wrong file extension")
 
-    files = [file for file in listdir(session["user_folder"]) if isfile(join(session["user_folder"], file))]
+    files = [file for file in listdir(session["user_folder"]) if isfile(join(session["user_folder"], file)) and allowed_file(file)]
     return render_template("files.html", files=files, db_selected=session["db_selected"], schemas=session['schemas'])
 
 
@@ -59,7 +59,7 @@ def select():
     except Exception as e:
         flash(e)
         print(e)
-        return jsonify({"error", str(e)}), 500
+        return jsonify({"error": str(e)}), 500
     
      
 @bp.route('/remove', methods=['POST'])
