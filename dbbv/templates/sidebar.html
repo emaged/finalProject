@@ -1,5 +1,5 @@
 <!-- Sidebar HTML Template -->
-<div class="sidebar border col-md-3 col-lg-2 p-2 bg-body-tertiary">
+<aside class="sidebar border col-md-3 col-lg-2 p-2 bg-body-tertiary overflow-auto">
     <a href="{{ url_for('sqlite.index') }}"
        class="d-flex align-items-center pb-3 mb-3 link-body-emphasis text-decoration-none border-bottom justify-content-center">
         <span class="fs-5 fw-semibold">Files & Schema's</span>
@@ -47,15 +47,21 @@
                     data-bs-target="#dashboard-collapse"
                     aria-expanded="false">Schemas</button>
             <div class="collapse" id="dashboard-collapse">
-                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small overflow-auto">
+                {% if schemas %}
                     {% for schema in schemas %}
-                        <li>
-                            <a href="#"
-                               class="link-body-emphasis d-inline-flex text-decoration-none rounded">{{ schema }}</a>
-                        </li>
+                        <table class="table table-striped border overflow-auto">
+                            <tbody>
+                                {% for key, value in schema.items() %}
+                                    <tr>
+                                        <td>{{ key }}</td>
+                                        <td>{{ value }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
                     {% endfor %}
-                </ul>
+                {% endif %}
             </div>
         </li>
     </ul>
-</div>
+</aside>

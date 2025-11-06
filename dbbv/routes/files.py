@@ -3,10 +3,11 @@ from os import listdir
 from os.path import isfile, join
 from flask import(
     Blueprint, flash, g, redirect, render_template, request, 
-    session, url_for, current_app, send_from_directory
+    session, url_for, current_app, send_from_directory, jsonify
 )
 from werkzeug.utils import secure_filename
 from dbbv.routes.helpers import allowed_file, login_required, apology 
+from dbbv.routes.sqlite import query_db_sqlite
 
 UPLOAD_FOLDER = 'user_databases'
 
@@ -51,9 +52,15 @@ def download_file(name):
 @login_required
 def select():
     data = request.form.get("selected_file")
-    #print(data)
     session["db_selected"] = data
-    return ("", 204)
+    try:
+        schemas = query_db_sqlite("SELECT * FROM sqlite_master")
+        return jsonify(schemas)
+    except Exception as e:
+        flash(e)
+        print(e)
+        return jsonify({"error", str(e)}), 500
+    
      
 @bp.route('/remove', methods=['POST'])
 @login_required
@@ -62,6 +69,16 @@ def removeFile():
     filepath = os.path.join(session["user_folder"], filename)
     if filepath:
         os.remove(filepath)
+        if filename is session["db_selected"]:
+            session["db_selected"] = None
+            session['schemas'] = None
+            flash("selected db deleted")
+
     else:
         print("The file does not exist")
+    files = [file for file in listdir(session['user_folder']) if isfile(join(session["user_folder"], file))]
+    if not files:
+        flash("Last file deleted")
+        session["db_selected"] = None
+        session['schemas'] = None
     return redirect(url_for('sqlite.index'))

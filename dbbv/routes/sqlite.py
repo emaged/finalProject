@@ -20,6 +20,9 @@ def index():
     if request.method == 'POST':
         # Run the query
         if request.form.get('action') == 'run' and request.form.get('query'):
+            if not session['db_selected']:
+                flash("No database selected")
+                return redirect(url_for('sqlite.index'))
             query = request.form.get('query')
             try:
                 query_result = query_db_sqlite(query)
@@ -34,7 +37,9 @@ def index():
         elif request.form.get('action') == 'clear':
             session['paired_queries'] = []
         elif request.form.get("remove"):
-            session['paired_queries'].pop(int(request.form.get("remove")))
+            popIndex = int(request.form.get("remove"))
+            print(popIndex)
+            session['paired_queries'].pop(popIndex)
             if not session['paired_queries']:
                 return '1'
             else:

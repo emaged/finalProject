@@ -10,11 +10,11 @@
   {% include "sidebar.html" %}
 {% endblock sidebar %}
 {% block main_classes %}
-  border col-md-9 ms-sm-auto col-lg-10 p-2 px-md-4 d-flex flex-column
+  border col-md-9 ms-sm-auto col-lg-10 p-2 px-md-4
 {% endblock main_classes %}
 {% block main %}
-  {% if files %}
-    <div class="row mb-3">
+  {% if files or paired_queries %}
+    <div class="row">
       <!-- Top row: SQL query form -->
       <form method="post" action="{{ url_for('sqlite.index') }}">
         <div class="mb-3">
@@ -36,10 +36,10 @@
       </form>
     </div>
     <!-- Bottom row: query results -->
-    <div class="row g-3 p-2 border rounded queryInput">
+    <div class="row queryInput">
       {% if paired_queries %}
         {% for query, headers, query_result in paired_queries %}
-          <div class="col mb-2 mt-2">
+          <div class="col g-3">
             <div class="card">
               <h5 class="card-header d-flex justify-content-between align-items-start">
                 <pre class=""><code>{{ query }}</code></pre>
@@ -50,7 +50,7 @@
                         aria-label="Close"></button>
               </h5>
               <div class="card-body table-responsive">
-                <table class="table table-striped table bordered table-sm mb-0">
+                <table class="table table-striped table-bordered table-sm mb-0">
                   <thead class="table-dark">
                     <tr>
                       {% for col in headers %}<th>{{ col }}</th>{% endfor %}

@@ -1,19 +1,19 @@
-body {
-  min-height: 100vh;
-  min-height: -webkit-fill-available;
-}
+/* body { */
+/*   min-height: 100vh; */
+/*   min-height: -webkit-fill-available; */
+/* } */
+/**/
+/* html { */
+/*   height: -webkit-fill-available; */
+/* } */
 
-html {
-  height: -webkit-fill-available;
-}
-
-main {
-  height: 100vh;
-  height: -webkit-fill-available;
-  max-height: 100vh;
-  overflow-x: auto;
-  overflow-y: hidden;
-}
+/* main { */
+/*   height: 100vh; */
+/*   height: -webkit-fill-available; */
+/*   max-height: 100vh; */
+/*   overflow-x: auto; */
+/*   overflow-y: hidden; */
+/* } */
 
 .dropdown-toggle { outline: 0; }
 
@@ -62,4 +62,23 @@ main {
   overflow-y: auto;
 }
 
+.sidebar {
+  height: 100vh;                /* Fill full viewport height */
+  overflow-y: auto;             /* Enable vertical scrolling */
+  overflow-x: auto;             /* Hide horizontal overflow */
+  position: sticky;             /* Keep sidebar in view */
+  top: 0;                       /* Needed for sticky */
+}
 
+.sidebar table {
+  table-layout: fixed;
+  width: 100%;
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+}
+
+.sidebar td {
+  max-width: 200px;             /* Adjust as needed */
+  white-space: normal;          /* Allow wrapping */
+  vertical-align: top;
+}
