@@ -2,8 +2,7 @@ from flask import redirect, render_template, session, g, url_for
 import functools
 from pathlib import Path
 
-passreg = r"""^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"""
-ALLOWED_EXTENSIONS = {'db', 'sqlite', 'sqlite3'}
+LLOWED_EXTENSIONS = {'db', 'sqlite', 'sqlite3'}
 
 def apology(message, code=400):
     """Render message as an apology to user."""

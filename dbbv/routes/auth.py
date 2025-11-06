@@ -1,11 +1,16 @@
 import os
+import sqlite3
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for, current_app
 )
 from werkzeug.security import check_password_hash, generate_password_hash
 from re import fullmatch
 from dbbv.db import get_db, query_db, execute_db
-from dbbv.routes.helpers import apology, passreg, login_required
+from dbbv.routes.helpers import apology, login_required
+    
+USERNAME_RE = r'^[A-Za-z0-9_-]{3,30}$'
+PASSREG = r"""^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"""
+
 
 bp = Blueprint('auth', __name__)
 
@@ -40,8 +45,9 @@ def login():
         # Remember which user has logged in
         session["user_id"] = rows[0]["id"]
         session["username"] = rows[0]["username"]
-        session["user_folder"] = os.path.join(current_app.config["UPLOAD_FOLDER"], rows[0]["username"])
-        os.makedirs(session["user_folder"], exist_ok=True)
+        user_folder = os.path.join(current_app.config["UPLOAD_FOLDER"], rows[0]["username"])
+        session["user_folder"] = user_folder 
+        os.makedirs(user_folder, exist_ok=True)
         session["db_selected"] = None
         session['paired_queries'] = []
         session['schemas'] = []
@@ -79,11 +85,12 @@ def register():
         username = request.form.get("username")
         if not username:
             return apology("must provide username")
+        if not fullmatch(USERNAME_RE, username):
+            return apology("invalid username (allowed: letters, digits, _, -; 3-30 chars)")
 
-        users = query_db("SELECT username FROM users")
-        for u in users:
-            if username == u["username"]:
-                return apology("username already taken")
+        existing = query_db("SELECT id FROM users WHERE username = ?", (username,), one=True)
+        if existing: 
+            return apology("username already taken")
 
         password = request.form.get("password")
         if not password:
@@ -93,7 +100,7 @@ def register():
         if not pconfirm:
             return apology("must confirm password")
 
-        password = fullmatch(passreg, password)
+        password = fullmatch(PASSREG, password)
         if not password:
             return apology("invalid password")
         password = password.group()
@@ -104,25 +111,36 @@ def register():
         try:
             execute_db("INSERT INTO users(username, password_hash) VALUES (?, ?)",
                    (username, generate_password_hash(password)))
-        except get_db().IntegrityError:
-            error = f"User {username} is already registered"
+            user_folder = os.path.join(current_app.config["UPLOAD_FOLDER"], username)
+            os.makedirs(user_folder, exist_ok=True)
+        except sqlite3.IntegrityError:
+            flash(f"User {username} is already registered", "danger")
+            return render_template('register.html')
+        except Exception as e:
+            flash("Error registering user")
+            return apology("Database error, please try again later")
         else:
             return redirect(url_for("auth.login"))
         
-        flash(error, "danger")
-
-        return render_template('register.html')
 
     if request.method == "GET":
         return render_template("register.html")
 
 
 @bp.route("/account", methods=["GET", "POST"])
+@login_required
 def account():
     if request.method == "POST":
         old = request.form.get("old")
         if not old:
             return apology("Old password not entered")
+        
+        password_check = query_db(
+            "SELECT password_hash FROM users WHERE username = ?", (session['username'],))
+        
+        if not check_password_hash(password_check[0]['password_hash'], old):
+            return apology("Old password incorrect")
+        
         new = request.form.get("new")
         if not new:
             return apology("New password not entered")
@@ -130,7 +148,7 @@ def account():
         if not confirm:
             return apology("Confirm password not entered")
 
-        new = fullmatch(passreg, new)
+        new = fullmatch(PASSREG, new)
         if not new:
             return apology("invalid password")
         new = new.group()

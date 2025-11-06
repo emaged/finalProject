@@ -2,7 +2,7 @@ import os
 from os import listdir
 from os.path import isfile, join
 from flask import(
-    Blueprint, flash, g, redirect, render_template, request, session, url_for
+    Blueprint, flash, g, redirect, render_template, request, session, url_for, current_app
 )
 import sqlite3
 from dbbv.routes.helpers import apology, login_required, allowed_file
@@ -64,7 +64,8 @@ def get_db_sqlite():
             detect_types=sqlite3.PARSE_DECLTYPES
         )
         g.custom_db.row_factory = dict_factory
-        g.custom_db.set_trace_callback(print)
+        if current_app.debug:
+            g.custom_db.set_trace_callback(print)
     return g.custom_db
 
 

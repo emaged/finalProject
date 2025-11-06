@@ -70,6 +70,13 @@
   top: 0;                       /* Needed for sticky */
 }
 
+@media (max-width: 575.98px) {  /* Bootstrap sm breakpoint */
+  .sidebar {
+    height: auto;
+    position: relative;  /* stop sticky on mobile */
+  }
+}
+
 .sidebar table {
   table-layout: fixed;
   width: 100%;

@@ -1,0 +1,1 @@
+Web app to inspect and change simple sqlite database files

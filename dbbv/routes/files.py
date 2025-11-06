@@ -7,9 +7,7 @@ from flask import(
 )
 from werkzeug.utils import secure_filename
 from dbbv.routes.helpers import allowed_file, login_required, apology 
-from dbbv.routes.sqlite import query_db_sqlite
-
-UPLOAD_FOLDER = 'user_databases'
+from dbbv.routes.sqlite_routes import query_db_sqlite
 
 bp = Blueprint('files', __name__)
 
