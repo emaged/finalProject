@@ -7,6 +7,11 @@
           content="Effortlessly browse, search, and manage your databases online with DataBase Browser Viewer. Fast, secure, and user-friendly—perfect for data professionals and teams.">
     <meta name="keywords"
           content="database, online database, DBBV, data management, search, secure database">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script>
+    // Define globally (only once)
+    window.CSRF_TOKEN = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    </script>
     <title>
       DBBV:
       {% block title %}
