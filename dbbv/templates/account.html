@@ -10,6 +10,7 @@
         <h2 class="mb-3">Account: {{ user }}</h2>
         <h3 class="mb-3">Change Password</h3>
         <form action="{{ url_for('auth.account') }}" method="post">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
             <div class="mb-3">
                 <input autofocus
                        autocomplete="off"

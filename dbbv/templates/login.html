@@ -39,6 +39,7 @@
     {% endwith %}
     <main class="form-signin w-100 m-auto">
       <form action="{{ url_for('auth.login') }}" method="post">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
         <img class="mb-1"
              src="{{ url_for('static', filename='img/logo_final.png') }}"
              alt=""

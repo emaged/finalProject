@@ -14,7 +14,7 @@ bp = Blueprint('sqlite', __name__)
 def index():
     user_folder = session.get('user_folder')
     if not user_folder or not os.path.isdir(user_folder):
-        # create user folder if it doesnt exist
+        # create user folder if it doesn't exist
         user_folder = os.path.join(current_app.config['UPLOAD_FOLDER'], session.get('username'))
         os.makedirs(user_folder, exist_ok=True)
         session['user_folder'] = user_folder

@@ -18,6 +18,7 @@
         <p>This is the files page. Use the sidebar to navigate through files and schema's.</p>
         <div class="mb-3">
             <form method="post" enctype="multipart/form-data">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                 <label for="formFile" class="form-label">Default file input example</label>
                 <input class="form-control" type="file" id="formFile" name="file">
                 <button type="submit" class="btn btn-primary mt-2">Upload</button>
