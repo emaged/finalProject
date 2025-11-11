@@ -25,7 +25,7 @@
                 
                 btn.closest('.col').remove();  // remove only after successful server update
                 if (emptyList === "1")
-                document.querySelector(".queryinput").innerHTML = "You deleted the last query"
+                document.querySelector(".queryInput").innerHTML = "You deleted the last query"
                 
                 // recalculate indexes
                 document.querySelectorAll('.btn-remove-query').forEach( (btn, index) => {

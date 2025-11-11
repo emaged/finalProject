@@ -5,7 +5,7 @@ from flask import(
     Blueprint, flash, g, redirect, render_template, request, session, url_for, current_app
 )
 import sqlite3
-from dbbv.routes.helpers import apology, login_required, allowed_file
+from dbbv.routes.helpers import login_required, allowed_file
 
 bp = Blueprint('sqlite', __name__)
 
@@ -19,15 +19,15 @@ def index():
         os.makedirs(user_folder, exist_ok=True)
         session['user_folder'] = user_folder
 
-    files = [file for file in listdir(session['user_folder']) if isfile(join(session["user_folder"], file)) and allowed_file(file)]
+    files = [file for file in listdir(session['user_folder']) if isfile(join(session['user_folder'], file)) and allowed_file(file)]
     if session.get('db_selected'):
-        session['schemas'] = query_db_sqlite("SELECT * FROM sqlite_master")
+        session['schemas'] = query_db_sqlite('SELECT * FROM sqlite_master')
     
     if request.method == 'POST':
         # Run the query
         if request.form.get('action') == 'run' and request.form.get('query'):
             if not session.get('db_selected'):
-                flash("No database selected")
+                flash('No database selected')
                 return redirect(url_for('sqlite.index'))
             query = request.form.get('query')
             try:
@@ -42,8 +42,8 @@ def index():
         # Clear queries
         elif request.form.get('action') == 'clear':
             session['paired_queries'] = []
-        elif request.form.get("remove"):
-            popIndex = int(request.form.get("remove"))
+        elif request.form.get('remove'):
+            popIndex = int(request.form.get('remove'))
             print(popIndex)
             session['paired_queries'].pop(popIndex)
             if not session['paired_queries']:
@@ -63,7 +63,7 @@ def dict_factory(cursor, row):
 
 def get_db_sqlite():
     db_path = os.path.join(session['user_folder'], session['db_selected'])
-    print("Opening database:", os.path.abspath(db_path))
+    print('Opening database:', os.path.abspath(db_path))
     if 'custom_db' not in g or g.get('custom_db_path') != db_path:
         g.custom_db = sqlite3.connect(
             db_path,
@@ -98,7 +98,7 @@ def combined_exec_db_sqlite(query, args=(), one=False, commit=False):
     cur = db.execute(query, args)
     result = None
     
-    if query.strip().lower().startswith("select"):
+    if query.strip().lower().startswith('select'):
         rows = cur.fetchall()
         result = (rows[0] if rows else None) if one else rows
     else:

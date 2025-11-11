@@ -5,6 +5,6 @@ from flask import (
 bp = Blueprint('alchemy', __name__)
 
 
-@bp.route("/alchemy")
+@bp.route('/alchemy')
 def index():
-    return render_template("index.html")
+    return render_template('index.html')

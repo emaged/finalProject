@@ -10,19 +10,47 @@
     {% include "sidebar.html" %}
 {% endblock sidebar %}
 {% block main_classes %}
-    border  col-12 col-md-9 ms-sm-auto col-lg-10 p-2 px-md-4
+    border col-sm-8 col-md-9 col-lg-10 p-2 px-md-4
 {% endblock main_classes %}
 {% block main %}
-    <div class="col">
-        <h1>Files</h1>
-        <p>This is the files page. Use the sidebar to navigate through files and schema's.</p>
-        <div class="mb-3">
-            <form method="post" enctype="multipart/form-data">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-                <label for="formFile" class="form-label">Default file input example</label>
-                <input class="form-control" type="file" id="formFile" name="file">
-                <button type="submit" class="btn btn-primary mt-2">Upload</button>
-            </form>
+    <div class="row">
+        <div class="col-12 col-lg-6 col-md-6 ">
+            <h1>Files</h1>
+            <p>This is the files page. Use the sidebar to navigate through files and schema's.</p>
+            <div class="mb-3">
+                <form action="{{ url_for('files.upload') }}"
+                      method="post"
+                      enctype="multipart/form-data">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                    <div class="mb-3">
+                        <label for="formFile" class="form-label">Default file input</label>
+                        <input class="form-control" type="file" id="formFile" name="file">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Upload</button>
+                </form>
+            </div>
+            <div class="mb-3">
+                <p>To create a new database file from scratch:</p>
+                <form action="{{ url_for('files.create') }}" method="post">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                    <div class="mb-3">
+                        <label for="filename" class="form-label">filename:</label>
+                        <input class="form-control"
+                               type="text"
+                               name="filename"
+                               placeholder="filename">
+                    </div>
+                    <div class="mb-3">
+                        <label for="extension" class="form-label">extension:</label>
+                        <select class="form-control" name="extension">
+                            <option value="">--file extension--</option>
+                            <option value="db">.db</option>
+                            <option value="sqlite">.sqlite</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Create new DB file</button>
+                </form>
+            </div>
         </div>
     </div>
 {% endblock main %}
