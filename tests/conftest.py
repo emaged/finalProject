@@ -16,6 +16,7 @@ def app():
     app = create_app({
         'TESTING': True,
         'DATABASE': db_path,
+        'WTF_CSRF_ENABLED': False,
     })
 
     with app.app_context():
@@ -45,12 +46,12 @@ class AuthActions(object):
 
     def login(self, username='test', password='test'):
         return self._client.post(
-            '/auth/login',
+            '/login',
             data={'username': username, 'password': password}
         )
 
     def logout(self):
-        return self._client.get('/auth/logout')
+        return self._client.get('/logout')
 
 
 @pytest.fixture

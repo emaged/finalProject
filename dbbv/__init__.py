@@ -2,6 +2,7 @@ import os
 
 from flask import Flask
 from flask_wtf.csrf import CSRFProtect
+from cachelib import FileSystemCache
 
 csrf = CSRFProtect()
 
@@ -11,9 +12,9 @@ def create_app(test_config=None):
     app.config.from_mapping(
         SECRET_KEY = 'DEV',
         DATABASE = os.path.join(app.instance_path, 'dbbv.sqlite'),
-        SESSION_PERMANENT = False,
-        SESSION_TYPE = 'filesystem',     
         UPLOAD_FOLDER = os.path.join(app.instance_path, 'user_databases'),
+        SESSION_PERMANENT = False,
+        SESSION_TYPE = 'cachelib',     
         # not used but for future setup
         MAX_CONTENT_LENGTH = 16 * 1024 * 1024,
     )
@@ -31,6 +32,9 @@ def create_app(test_config=None):
     # ensure the instance folder exists
     os.makedirs(app.instance_path, exist_ok=True)
     os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+    
+    # set up session_cache after UPLOAD_FOLDER has been defined 
+    app.config["SESSION_CACHE"] = FileSystemCache(app.config["UPLOAD_FOLDER"])
     
     from flask_session import Session
     Session(app)

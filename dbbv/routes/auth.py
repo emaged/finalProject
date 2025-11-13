@@ -40,7 +40,6 @@ def login():
             rows[0]['password_hash'], request.form.get('password')
         ):
             flash('invalid username and/or password', 'danger')
-            print('hi there')
             return render_template('login.html')
 
         # Forget any user_id
@@ -198,6 +197,3 @@ def load_logged_in_user():
         g.user = get_db().execute(
             'SELECT * FROM users WHERE id = ?', (user_id,)
         ).fetchone()
-
-
-

@@ -4,5 +4,9 @@
   },
   "emmet.includeLanguages": {
     "jinja-html": "html"
-  }
+  },
+  "cSpell.words": [
+    "dotenv",
+    "testpaths"
+  ]
 }
