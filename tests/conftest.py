@@ -18,6 +18,16 @@ def app():
         'DATABASE': db_path,
         'WTF_CSRF_ENABLED': False,
     })
+    
+    test_upload_dir = os.path.join(app.instance_path, 'test_user_databases')
+    os.makedirs(test_upload_dir, exist_ok=True)
+    
+    # override upload folder
+    app.config['UPLOAD_FOLDER'] = test_upload_dir
+    
+    # override session storage too
+    from cachelib import FileSystemCache
+    app.config['SESSION_CACHELIB'] = FileSystemCache(test_upload_dir)
 
     with app.app_context():
         init_db()

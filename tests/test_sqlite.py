@@ -11,5 +11,12 @@ def test_index(client, auth):
     assert b'Account' in response.data
     assert b'File Upload' in response.data
     assert b'SQLite' in response.data
-    assert b'SQLAlchemy' in response.data
+
+    response = client.post('/', data={
+        'action': 'run',
+        'query': 'SELECT * FROM sqlite_master'
+    }, follow_redirects=True)
+
+    assert b'No database selected' in response.data
     
+    # room for adding more testing of query input etc.

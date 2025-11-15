@@ -34,7 +34,7 @@ def create_app(test_config=None):
     os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
     
     # set up session_cache after UPLOAD_FOLDER has been defined 
-    app.config["SESSION_CACHE"] = FileSystemCache(app.config["UPLOAD_FOLDER"])
+    app.config["SESSION_CACHELIB"] = FileSystemCache(app.config["UPLOAD_FOLDER"])
     
     from flask_session import Session
     Session(app)
@@ -52,8 +52,6 @@ def create_app(test_config=None):
     from dbbv.routes.sqlite_routes import close_custom_db
     app.teardown_appcontext(close_custom_db)
     
-    from dbbv.routes import alchemy_routes
-    app.register_blueprint(alchemy_routes.bp)
     from dbbv.routes import files
     app.register_blueprint(files.bp)
     

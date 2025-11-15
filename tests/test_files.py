@@ -1,70 +1,136 @@
 import pytest
+import io
+import sqlite3, os
 from dbbv.db import get_db
+from dbbv.routes.sqlite_routes import query_db_sqlite
+from flask import session
 
-def test_upload(app, client, auth):
+# beware test files are created and used by multiple functions
+# cleanup is not per function
+
+def create_sqlite_file():
+    import sqlite3, io, tempfile, os
+
+    fd, tmp_path = tempfile.mkstemp(suffix=".db")
+    os.close(fd)
+    conn = sqlite3.connect(tmp_path)
+    # WARNING does not delete old table t if it exists in the user folder
+    conn.execute("CREATE TABLE t (id INTEGER PRIMARY KEY, descr TEXT)")
+    conn.execute("INSERT INTO t(descr) VALUES ('first')")
+    conn.execute("INSERT INTO t(descr) VALUES ('second')")
+    conn.execute("INSERT INTO t(descr) VALUES ('third')")
+    conn.commit()
+    conn.close()
+
+    with open(tmp_path, "rb") as f:
+        bio = io.BytesIO(f.read())
+
+    os.remove(tmp_path)
+    return bio
+
+
+def create_test_db(client, name="example.db"):
+    with client:
+        client.get('/') 
+        user_folder = session['user_folder']
+    os.makedirs(user_folder, exist_ok=True)
+
+    path = os.path.join(user_folder, name)
+    sqlite3.connect(path).close()
+
+
+def test_upload(client, auth):
     auth.login()
-    response = client.get('/upload')
+    
+    with client:
+        client.get("/")
+        user_folder = session["user_folder"]
+
+    data = {
+        "file": (create_sqlite_file(), "example.db")
+    }
+    response = client.post('/upload', data=data, content_type='multipart/form-data', follow_redirects=True)
+    assert response.status_code == 200
     assert b"This is the files page." in response.data
-
-def test_download(app, client, auth):
-    auth.login()
-    response = client.get('download')
     
-def test_author_required(app, client, auth):
-    # change the post author to another user
-    with app.app_context():
-        db = get_db()
-        db.execute('UPDATE post SET author_id = 2 WHERE id = 1')
-        db.commit()
+    path = os.path.join(user_folder, "example.db")
+    assert os.path.exists(path)
 
+
+def test_download(client, auth):
     auth.login()
-    # current user can't modify other user's post
-    assert client.post('/1/update').status_code == 403
-    assert client.post('/1/delete').status_code == 403
-    # current user doesn't see edit link
-    assert b'href="/1/update"' not in client.get('/').data
+    response = client.get('/download/example.db')
+    
+    assert response.status_code == 200 
+    assert response.data.startswith(b"SQLite format 3")
+    
+    response2 = client.get('/download/example2.db', follow_redirects=True)
+    assert response2.status_code == 200
+    assert b"File not found" in response2.data
 
 
-@pytest.mark.parametrize('path', (
-    '/2/update',
-    '/2/delete',
-))
-def test_exists_required(client, auth, path):
+def test_select(client, auth, app):
     auth.login()
-    assert client.post(path).status_code == 404
+
+    create_test_db(client)
+
+    response = client.post('/select',
+                           data={
+                               'selected_file': 'example.db'
+                           })
+    assert response.status_code == 200
+    assert response.is_json 
+    response_data = response.get_json()
+    assert isinstance(response_data, list)
+    
+    with client:
+        client.get('/')
+        expected_data = query_db_sqlite('SELECT * FROM sqlite_master')
+    
+    # Compare names only
+    response_names = {row["name"] for row in response_data}
+    expected_names = {row["name"] for row in expected_data}
+    assert response_names == expected_names
     
 
-
-    ## step 3 ##
-def test_create(client, auth, app):
+def test_removeFile(client, auth):
     auth.login()
-    assert client.get('/create').status_code == 200
-    client.post('/create', data={'title': 'created', 'body': ''})
+    with client:
+        client.get("/")
+        user_folder = session["user_folder"]
 
-    with app.app_context():
-        db = get_db()
-        count = db.execute('SELECT COUNT(id) FROM post').fetchone()[0]
-        assert count == 2
+    filePath = os.path.join(user_folder, "example.db") 
+    assert os.path.exists(filePath)
 
+    response = client.post('/remove', data={
+        'remove': 'example.db'
+    }, follow_redirects=True)
 
-def test_update(client, auth, app):
-    auth.login()
-    assert client.get('/1/update').status_code == 200
-    client.post('/1/update', data={'title': 'updated', 'body': ''})
+    assert response.status_code == 200
+    assert not os.path.exists(filePath)
 
-    with app.app_context():
-        db = get_db()
-        post = db.execute('SELECT * FROM post WHERE id = 1').fetchone()
-        assert post['title'] == 'updated'
-        
+    response2 = client.post('/remove', data={
+        'remove': 'example2.db'
+    }, follow_redirects=True)
+    
+    assert response2.status_code == 200
+    assert b"The file does not exist" in response2.data
+    
 
-### step 4 ###
-def test_delete(client, auth, app):
-    auth.login()
-    response = client.post('/1/delete')
-    assert response.headers["Location"] == "/"
+def test_create(client, auth):
+    auth.login() 
+    with client:
+        client.get('/')
+        user_folder = session['user_folder']
 
-    with app.app_context():
-        db = get_db()
-        post = db.execute('SELECT * FROM post WHERE id = 1').fetchone()
-        assert post is None
+    response = client.post('/create', data={
+         'filename': 'newtest', 
+         'extension': 'db'}, follow_redirects=True)
+    assert response.status_code == 200
+    
+    full_path = os.path.join(user_folder, "newtest.db")
+    assert os.path.exists(full_path)
+    os.remove(full_path)
+    assert not os.path.exists(full_path)
+    
+   

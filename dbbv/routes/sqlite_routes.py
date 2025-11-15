@@ -63,7 +63,6 @@ def dict_factory(cursor, row):
 
 def get_db_sqlite():
     db_path = os.path.join(session['user_folder'], session['db_selected'])
-    print('Opening database:', os.path.abspath(db_path))
     if 'custom_db' not in g or g.get('custom_db_path') != db_path:
         g.custom_db = sqlite3.connect(
             db_path,
