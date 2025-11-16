@@ -1,4 +1,4 @@
-import os
+import os, sqlite3
 from os import listdir
 from os.path import isfile, join
 from flask import(
@@ -36,6 +36,9 @@ def upload():
             filename = secure_filename(file.filename)
             if not filename:
                 flash('invalid filename')
+                return redirect(request.url)
+            if not is_valid_sqlite(file):
+                flash('file is not sqlite db')
                 return redirect(request.url)
             filepath = os.path.join(session['user_folder'], filename)
             if os.path.exists(filepath):
@@ -83,6 +86,7 @@ def select():
     session['db_selected'] = filename 
     try:
         schemas = query_db_sqlite('SELECT * FROM sqlite_master')
+        session['schemas'] = schemas
         return jsonify(schemas)
     except Exception as e:
         flash(e)
@@ -116,7 +120,7 @@ def removeFile():
     return redirect(url_for('sqlite.index'))
 
 
-@bp.route('/create', methods=['GET', 'POST'])
+@bp.route('/create', methods=['POST'])
 @login_required
 def create():    
     # check user folder for safety
@@ -151,10 +155,20 @@ def create():
         return redirect(url_for('files.upload'))
     
     try:
-        with open (filepath, 'w') as f:
-            pass
+        sqlite3.connect(filepath).close()
         flash('file created successfully!')
     except Exception as e:
         flash(f'error creating file: {e}')
         return redirect(url_for('files.upload'))
     return redirect(url_for('files.upload'))
+
+def is_valid_sqlite(file_obj):
+    """
+    Check whether the uploaded file is a real SQLite database.
+
+    Reads first 16 bytes and compares to SQLite magic header.
+    """
+    header = file_obj.read(16)     # Read first 16 bytes
+    print(header)
+    file_obj.seek(0)               # Reset pointer after reading
+    return header == b"SQLite format 3\x00"
