@@ -24,14 +24,14 @@ def index():
         # Run the query
         if request.form.get('action') == 'run' and request.form.get('query'):
             if not session.get('db_selected'):
-                flash('No database selected')
+                flash('No database selected', 'dark')
                 return redirect(url_for('sqlite.index'))
             query = request.form.get('query')
             try:
                 query_result = combined_exec_db_sqlite(query, commit=True)
                 header, formatted_result = format_query_result(query_result)
             except Exception as e:
-                flash(e)
+                flash(e, 'danger')
                 return redirect(url_for('sqlite.index'))
             
             paired_queries = [[query, header, formatted_result]] + paired_queries
