@@ -1,10 +1,10 @@
 import os
-
 from flask import Flask
 from flask_wtf.csrf import CSRFProtect
 from cachelib import FileSystemCache
 
 csrf = CSRFProtect()
+
 
 def create_app(test_config=None):
     # create and configure app
@@ -49,14 +49,13 @@ def create_app(test_config=None):
     from dbbv.routes import sqlite_routes
     app.register_blueprint(sqlite_routes.bp)
     
-    from dbbv.routes.sqlite_routes import close_custom_db
+    from dbbv.user_db.user_sqlite import close_custom_db
     app.teardown_appcontext(close_custom_db)
     
     from dbbv.routes import files
     app.register_blueprint(files.bp)
     
-    
-    from dbbv.routes.helpers import split_ext
+    from dbbv.utils.helpers import split_ext
     app.jinja_env.globals.update(split_ext=split_ext)
 
     return app

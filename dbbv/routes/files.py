@@ -3,23 +3,19 @@ from os import listdir
 from os.path import isfile, join
 from flask import(
     Blueprint, flash, redirect, render_template, request, 
-    session, url_for, current_app, send_from_directory, jsonify
+    session, url_for, send_from_directory, jsonify
 )
 from werkzeug.utils import secure_filename
-from dbbv.routes.helpers import allowed_file, login_required, ALLOWED_EXTENSIONS
-from dbbv.routes.sqlite_routes import query_db_sqlite
+from dbbv.utils.helpers import allowed_file, login_required, ALLOWED_EXTENSIONS, is_valid_sqlite
+from dbbv.routes.sqlite_routes import query_db_sqlite, check_user_folder
 
 bp = Blueprint('files', __name__)
+
 
 @bp.route('/upload', methods=['GET', 'POST'])
 @login_required
 def upload():
-    # check user folder for safety
-    user_folder = session.get('user_folder')
-    if not user_folder:
-        user_folder = os.path.join(current_app.config['UPLOAD_FOLDER'], session.get('username'))
-        os.makedirs(user_folder, exist_ok=True)
-        session['user_folder'] = user_folder
+    check_user_folder()
 
     if request.method == 'POST':
         # check if the post request has the file part
@@ -56,7 +52,7 @@ def upload():
 @login_required
 def download_file(name):
     filename = secure_filename(name)
-    user_folder = session.get('user_folder')
+    user_folder = check_user_folder() 
     if not filename or not user_folder:
         flash('Invalid download request')
         return redirect(url_for('sqlite.index'))
@@ -72,6 +68,7 @@ def download_file(name):
 @bp.route('/select', methods=['POST'])
 @login_required
 def select():
+    check_user_folder()
     filename = request.form.get('selected_file')
     if not filename:
         error = 'Invalid db selected'
@@ -98,6 +95,7 @@ def select():
 @bp.route('/remove', methods=['POST'])
 @login_required
 def removeFile():
+    check_user_folder()
     filename = secure_filename(request.form.get('remove'))
     if not filename:
         flash('No File specified')
@@ -128,13 +126,8 @@ def removeFile():
 @bp.route('/create', methods=['POST'])
 @login_required
 def create():    
-    # check user folder for safety
-    user_folder = session.get('user_folder')
-    if not user_folder:
-        user_folder = os.path.join(current_app.config['UPLOAD_FOLDER'], session.get('username'))
-        os.makedirs(user_folder, exist_ok=True)
-        session['user_folder'] = user_folder
-    
+    check_user_folder()
+   
     filename = request.form.get('filename','').strip()
     if not filename:
         flash('No filename entered')
@@ -167,12 +160,3 @@ def create():
         return redirect(url_for('files.upload'))
     return redirect(url_for('files.upload'))
 
-def is_valid_sqlite(file_obj):
-    """
-    Check whether the uploaded file is a real SQLite database.
-
-    Reads first 16 bytes and compares to SQLite magic header.
-    """
-    header = file_obj.read(16)     # Read first 16 bytes
-    file_obj.seek(0)               # Reset pointer after reading
-    return header == b"SQLite format 3\x00"

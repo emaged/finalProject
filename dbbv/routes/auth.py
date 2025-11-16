@@ -6,7 +6,7 @@ from flask import (
 from werkzeug.security import check_password_hash, generate_password_hash
 from re import fullmatch
 from dbbv.db import get_db, query_db, execute_db
-from dbbv.routes.helpers import login_required
+from dbbv.utils.helpers import login_required
     
 USERNAME_RE = r'^[A-Za-z0-9_-]{3,30}$'
 PASSREG = r'''^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$'''
