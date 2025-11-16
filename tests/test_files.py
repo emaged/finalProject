@@ -1,6 +1,6 @@
 import pytest
 import io
-import sqlite3, os
+import sqlite3, os, tempfile
 from dbbv.db import get_db
 from dbbv.routes.sqlite_routes import query_db_sqlite
 from flask import session
@@ -9,8 +9,6 @@ from flask import session
 # cleanup is not per function
 
 def create_sqlite_file():
-    import sqlite3, io, tempfile, os
-
     fd, tmp_path = tempfile.mkstemp(suffix=".db")
     os.close(fd)
     conn = sqlite3.connect(tmp_path)

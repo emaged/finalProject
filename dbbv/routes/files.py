@@ -2,7 +2,7 @@ import os, sqlite3
 from os import listdir
 from os.path import isfile, join
 from flask import(
-    Blueprint, flash, g, redirect, render_template, request, 
+    Blueprint, flash, redirect, render_template, request, 
     session, url_for, current_app, send_from_directory, jsonify
 )
 from werkzeug.utils import secure_filename
@@ -75,21 +75,23 @@ def select():
     filename = request.form.get('selected_file')
     if not filename:
         error = 'Invalid db selected'
-        flash(error)
         return jsonify({'error': str(error)}), 400
     filename = secure_filename(filename)
 
     if not allowed_file(filename):
         error = 'Invalid file type'
-        flash(error)
         return jsonify({'error': error}), 400
+    
+    if not os.path.isfile(os.path.join(session['user_folder'], filename)):
+        error = "file doesn't exist"
+        return jsonify({'error': error}), 400
+
     session['db_selected'] = filename 
     try:
         schemas = query_db_sqlite('SELECT * FROM sqlite_master')
         session['schemas'] = schemas
         return jsonify(schemas)
     except Exception as e:
-        flash(e)
         return jsonify({'error': str(e)}), 500
     
      
@@ -172,6 +174,5 @@ def is_valid_sqlite(file_obj):
     Reads first 16 bytes and compares to SQLite magic header.
     """
     header = file_obj.read(16)     # Read first 16 bytes
-    print(header)
     file_obj.seek(0)               # Reset pointer after reading
     return header == b"SQLite format 3\x00"
