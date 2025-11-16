@@ -97,10 +97,12 @@ def select():
 @login_required
 def removeFile():
     check_user_folder()
-    filename = secure_filename(request.form.get('remove'))
+
+    filename = secure_filename(request.form.get('remove', '').strip())
     if not filename:
         flash('No File specified', 'dark')
         return redirect(url_for('sqlite.index'))
+    
     if not allowed_file(filename):
         flash('Specified file not allowed to be removed', 'dark')
         return redirect(url_for('sqlite.index'))
@@ -110,7 +112,7 @@ def removeFile():
         os.remove(filepath)
         if filename == session.get('db_selected'):
             session['db_selected'] = None
-            flash('selected db deleted', 'succes')
+            flash('selected db deleted', 'success')
     else:
         flash('The file does not exist', 'dark')
 
@@ -131,7 +133,7 @@ def create():
         return redirect(url_for('files.upload'))
     extension = request.form.get('extension')
     if not extension:
-        flash('no extension selected'), 'dark' 
+        flash('no extension selected')
         return redirect(url_for('files.upload')) 
     filename = secure_filename(filename)
     if not filename or filename == '':
@@ -151,7 +153,7 @@ def create():
     
     try:
         sqlite3.connect(filepath).close()
-        flash('file created successfully!', 'succes')
+        flash('file created successfully!', 'success')
     except Exception as e:
         flash(f'error creating file: {e}', 'dark')
         return redirect(url_for('files.upload'))
