@@ -6,9 +6,8 @@ from flask import(
     session, url_for, send_from_directory, jsonify
 )
 from werkzeug.utils import secure_filename
-from dbbv.utils.helpers import allowed_file, login_required, ALLOWED_EXTENSIONS, is_valid_sqlite
-from dbbv.routes.sqlite_routes import query_db_sqlite, check_user_folder
-
+from dbbv.utils.helpers import allowed_file, login_required, ALLOWED_EXTENSIONS, is_valid_sqlite, check_user_folder
+from dbbv.user_db.user_sqlite import query_db_sqlite
 bp = Blueprint('files', __name__)
 
 
