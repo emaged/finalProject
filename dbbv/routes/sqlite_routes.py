@@ -1,9 +1,7 @@
-from os import listdir
-from os.path import isfile, join
 from flask import(
     Blueprint, flash, redirect, render_template, request, session, url_for, current_app
 )
-from dbbv.utils.helpers import login_required, allowed_file, check_user_folder
+from dbbv.utils.helpers import login_required, check_user_folder, list_user_files
 from dbbv.user_db.user_sqlite import query_db_sqlite, combined_exec_db_sqlite, format_query_result
 from dbbv.utils.query_history import load_history, save_history
 
@@ -14,7 +12,7 @@ bp = Blueprint('sqlite', __name__)
 @login_required
 def index():
     user_folder = check_user_folder()
-    files = [file for file in listdir(session['user_folder']) if isfile(join(session['user_folder'], file)) and allowed_file(file)]
+    files = list_user_files() 
     paired_queries = load_history(user_folder)
     
     if session.get('db_selected'):

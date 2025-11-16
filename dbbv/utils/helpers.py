@@ -1,6 +1,8 @@
-from flask import redirect, session, g, url_for, current_app
 import functools, os
+from os import listdir
+from os.path import isfile, join
 from pathlib import Path
+from flask import redirect, session, g, url_for, current_app
 
 ALLOWED_EXTENSIONS = {'db', 'sqlite', 'sqlite3'}
 
@@ -46,3 +48,9 @@ def is_valid_sqlite(file_obj):
     header = file_obj.read(16)     # Read first 16 bytes
     file_obj.seek(0)               # Reset pointer after reading
     return header == b"SQLite format 3\x00"
+    
+
+def list_user_files():
+    files = [file for file in listdir(session['user_folder']) if isfile(join(session['user_folder'], file)) and allowed_file(file)]
+    return files
+  

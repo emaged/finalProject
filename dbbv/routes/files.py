@@ -6,7 +6,7 @@ from flask import(
     session, url_for, send_from_directory, jsonify
 )
 from werkzeug.utils import secure_filename
-from dbbv.utils.helpers import allowed_file, login_required, ALLOWED_EXTENSIONS, is_valid_sqlite, check_user_folder
+from dbbv.utils.helpers import allowed_file, login_required, ALLOWED_EXTENSIONS, is_valid_sqlite, check_user_folder, list_user_files
 from dbbv.user_db.user_sqlite import query_db_sqlite
 bp = Blueprint('files', __name__)
 
@@ -42,7 +42,7 @@ def upload():
         else:
             flash('file (extension) error, wrong file extension')
 
-    files = [file for file in listdir(session['user_folder']) if isfile(join(session['user_folder'], file)) and allowed_file(file)]
+    files = list_user_files()
     return render_template('files.html', files=files, db_selected=session['db_selected'], schemas=session['schemas'])
 
 
@@ -111,7 +111,7 @@ def removeFile():
     else:
         flash('The file does not exist')
 
-    files = [file for file in listdir(session['user_folder']) if isfile(join(session['user_folder'], file))]
+    files = list_user_files()
     if not files:
         flash('Last file deleted')
         session['db_selected'] = None
