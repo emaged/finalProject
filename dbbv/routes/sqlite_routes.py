@@ -14,8 +14,8 @@ def index():
     user_folder = check_user_folder()
     files = list_user_files() 
     paired_queries = load_history(user_folder)
-    
-    if session.get('db_selected'):
+    db_selected = session.get('db_selected') 
+    if db_selected:
         schemas = query_db_sqlite('SELECT * FROM sqlite_master')
     else:
         schemas = None
@@ -34,8 +34,8 @@ def index():
                 flash(e, 'danger')
                 return redirect(url_for('sqlite.index'))
             
-            paired_queries = [[query, header, formatted_result]] + paired_queries
-            save_history(user_folder, paired_queries)
+            paired_queries.insert(0, [query, header, formatted_result])
+            paired_queries = save_history(user_folder, paired_queries)
         
         # Clear queries
         elif request.form.get('action') == 'clear':
@@ -55,5 +55,5 @@ def index():
                 return '0'
 
     # replace with session.get in production code for safety 
-    return render_template('index.html', files=files, db_selected=session['db_selected'],
+    return render_template('index.html', files=files, db_selected=db_selected,
                            paired_queries=paired_queries, schemas=schemas) 

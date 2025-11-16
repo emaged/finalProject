@@ -16,7 +16,7 @@ def create_app(test_config=None):
         SESSION_PERMANENT = False,
         SESSION_TYPE = 'cachelib',     
         # not used but for future setup
-        MAX_CONTENT_LENGTH = 16 * 1024 * 1024,
+        # MAX_CONTENT_LENGTH = 16 * 1024 * 1024,
     )
             
     if test_config is None:
@@ -33,8 +33,10 @@ def create_app(test_config=None):
     os.makedirs(app.instance_path, exist_ok=True)
     os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
     
-    # set up session_cache after UPLOAD_FOLDER has been defined 
-    app.config["SESSION_CACHELIB"] = FileSystemCache(app.config["UPLOAD_FOLDER"])
+    # set up session_cache
+    session_cache_dir = os.path.join(app.instance_path, 'session_cache')
+    os.makedirs(session_cache_dir, exist_ok=True)
+    app.config["SESSION_CACHELIB"] = FileSystemCache(session_cache_dir)
     
     from flask_session import Session
     Session(app)

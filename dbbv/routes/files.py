@@ -1,6 +1,5 @@
-import os, sqlite3
-from os import listdir
-from os.path import isfile, join
+import os 
+import sqlite3
 from flask import(
     Blueprint, flash, redirect, render_template, request,
     session, url_for, send_from_directory, jsonify
@@ -54,9 +53,12 @@ def upload():
 @login_required
 def download_file(name):
     user_folder = check_user_folder() 
-    filename = secure_filename(name)
+    filename = secure_filename(name.strip())
     if not filename or not user_folder:
         flash('Invalid download request', 'dark')
+        return redirect(url_for('sqlite.index'))
+    if not allowed_file(filename):
+        flash('Not allowed to download this file', 'danger')
         return redirect(url_for('sqlite.index'))
    
     # ensure the file exists inside user folder

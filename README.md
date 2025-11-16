@@ -14,3 +14,5 @@ to generate a secret key run:
 
 save this key to your /instance/config.py file:
 SECRET_KEY = 'your_generated_secret_key'
+
+MAX_HISTORY_SIZE is set at 30 for number of queries in memory
