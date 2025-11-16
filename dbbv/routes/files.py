@@ -100,7 +100,10 @@ def removeFile():
     if not filename:
         flash('No File specified')
         return redirect(url_for('sqlite.index'))
-
+    if not allowed_file(filename):
+        flash('Specified file not allowed to be removed')
+        return redirect(url_for('sqlite.index'))
+    
     filepath = os.path.join(session['user_folder'], filename)
     if os.path.exists(filepath):
         os.remove(filepath)
