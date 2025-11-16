@@ -5,6 +5,7 @@ from flask import(
 )
 from dbbv.utils.helpers import login_required, allowed_file, check_user_folder
 from dbbv.user_db.user_sqlite import query_db_sqlite, combined_exec_db_sqlite, format_query_result
+from dbbv.utils.query_history import load_history, save_history
 
 bp = Blueprint('sqlite', __name__)
 
@@ -12,11 +13,14 @@ bp = Blueprint('sqlite', __name__)
 @bp.route('/', methods=['GET', 'POST'])
 @login_required
 def index():
-    check_user_folder()
-
+    user_folder = check_user_folder()
     files = [file for file in listdir(session['user_folder']) if isfile(join(session['user_folder'], file)) and allowed_file(file)]
+    paired_queries = load_history(user_folder)
+    
     if session.get('db_selected'):
-        session['schemas'] = query_db_sqlite('SELECT * FROM sqlite_master')
+        schemas = query_db_sqlite('SELECT * FROM sqlite_master')
+    else:
+        schemas = None
     
     if request.method == 'POST':
         # Run the query
@@ -31,22 +35,27 @@ def index():
             except Exception as e:
                 flash(e)
                 return redirect(url_for('sqlite.index'))
-
-            session['paired_queries'] = [(query, header, formatted_result)] + session['paired_queries']           
+            
+            paired_queries = [[query, header, formatted_result]] + paired_queries
+            save_history(user_folder, paired_queries)
+        
         # Clear queries
         elif request.form.get('action') == 'clear':
-            session['paired_queries'] = []
+            paired_queries = []
+            save_history(user_folder, paired_queries)
+
         elif request.form.get('remove'):
             popIndex = int(request.form.get('remove'))
-            session['paired_queries'].pop(popIndex)
-            if not session['paired_queries']:
+            paired_queries = load_history(user_folder)
+            paired_queries.pop(popIndex)
+            save_history(user_folder, paired_queries)
+            
+            # return goes to js
+            if not paired_queries:
                 return '1'
             else:
                 return '0'
 
     # replace with session.get in production code for safety 
     return render_template('index.html', files=files, db_selected=session['db_selected'],
-                           paired_queries=session['paired_queries'], schemas=session['schemas']) 
-
-
-
+                           paired_queries=paired_queries, schemas=schemas) 

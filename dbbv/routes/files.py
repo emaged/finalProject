@@ -15,7 +15,6 @@ bp = Blueprint('files', __name__)
 @login_required
 def upload():
     check_user_folder()
-
     if request.method == 'POST':
         # check if the post request has the file part
         if 'file' not in request.files:
@@ -50,8 +49,8 @@ def upload():
 @bp.route('/download/<name>', methods=['GET'])
 @login_required
 def download_file(name):
-    filename = secure_filename(name)
     user_folder = check_user_folder() 
+    filename = secure_filename(name)
     if not filename or not user_folder:
         flash('Invalid download request')
         return redirect(url_for('sqlite.index'))
@@ -85,7 +84,6 @@ def select():
     session['db_selected'] = filename 
     try:
         schemas = query_db_sqlite('SELECT * FROM sqlite_master')
-        session['schemas'] = schemas
         return jsonify(schemas)
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -109,7 +107,6 @@ def removeFile():
         print(filename)
         if filename == session.get('db_selected'):
             session['db_selected'] = None
-            session['schemas'] = None
             flash('selected db deleted')
     else:
         flash('The file does not exist')
@@ -118,7 +115,6 @@ def removeFile():
     if not files:
         flash('Last file deleted')
         session['db_selected'] = None
-        session['schemas'] = None
     return redirect(url_for('sqlite.index'))
 
 
@@ -126,7 +122,6 @@ def removeFile():
 @login_required
 def create():    
     check_user_folder()
-   
     filename = request.form.get('filename','').strip()
     if not filename:
         flash('No filename entered')

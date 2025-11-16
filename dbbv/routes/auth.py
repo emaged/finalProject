@@ -53,7 +53,6 @@ def login():
         os.makedirs(user_folder, exist_ok=True)
         session['db_selected'] = None
         session['paired_queries'] = []
-        session['schemas'] = []
         # Redirect user to home page
         if request.form.get('remember'):
             session.permanent = True 
