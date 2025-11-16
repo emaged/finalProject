@@ -35,8 +35,6 @@ def test_register_validate_input(client, username, password, confirmation, messa
 def test_login(client, auth):
     assert client.get('/login').status_code == 200
     response = auth.login()
-    print(response.status_code)
-    print(response.data.decode())
     assert response.headers["Location"] == "/"
 
     with client:

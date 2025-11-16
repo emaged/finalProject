@@ -5,4 +5,4 @@ VALUES
 
 INSERT INTO user_dbs (author_id, db_title, file_path)
 VALUES
-  ('test', 'test_db', 'some_test_file_path')
+  (1, 'test_db', 'some_test_file_path')

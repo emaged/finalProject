@@ -69,8 +69,18 @@ def download_file(name):
 @bp.route('/select', methods=['POST'])
 @login_required
 def select():
-    data = request.form.get('selected_file')
-    session['db_selected'] = data
+    filename = request.form.get('selected_file')
+    if not filename:
+        error = 'Invalid db selected'
+        flash(error)
+        return jsonify({'error': str(error)}), 400
+    filename = secure_filename(filename)
+
+    if not allowed_file(filename):
+        error = 'Invalid file type'
+        flash(error)
+        return jsonify({'error': error}), 400
+    session['db_selected'] = filename 
     try:
         schemas = query_db_sqlite('SELECT * FROM sqlite_master')
         return jsonify(schemas)

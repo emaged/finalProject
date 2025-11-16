@@ -38,13 +38,11 @@ def index():
                 return redirect(url_for('sqlite.index'))
 
             session['paired_queries'] = [(query, header, formatted_result)] + session['paired_queries']           
-            print(session['paired_queries'])
         # Clear queries
         elif request.form.get('action') == 'clear':
             session['paired_queries'] = []
         elif request.form.get('remove'):
             popIndex = int(request.form.get('remove'))
-            print(popIndex)
             session['paired_queries'].pop(popIndex)
             if not session['paired_queries']:
                 return '1'
@@ -71,6 +69,13 @@ def get_db_sqlite():
         g.custom_db.row_factory = dict_factory
         if current_app.debug:
             g.custom_db.set_trace_callback(print)
+        
+        # ENABLE FOREIGN KEY ENFORCEMENT 
+        g.custom_db.execute("PRAGMA foreign_keys = ON")
+        
+        # Keep track of what DB this connection belongs to
+        g.custom_db_path = db_path
+
     return g.custom_db
 
 
@@ -86,11 +91,13 @@ def query_db_sqlite(query, args=(), one=False):
     cur.close()
     return (rv[0] if rv else None) if one else rv
 
+
 def execute_db_sqlite(query, args=()):
     db = get_db_sqlite()
     cur = db.execute(query, args)
     db.commit()
     cur.close()
+
 
 def combined_exec_db_sqlite(query, args=(), one=False, commit=False):
     db = get_db_sqlite()
@@ -105,6 +112,7 @@ def combined_exec_db_sqlite(query, args=(), one=False, commit=False):
             db.commit()
     cur.close()
     return result
+
 
 def format_query_result(query_result):
     if not query_result:

@@ -14,6 +14,9 @@ def get_db():
         g.db.row_factory = sqlite3.Row
         if current_app.debug:    
             g.db.set_trace_callback(print)
+        
+        # ENABLE FOREIGN KEY ENFORCEMENT 
+        g.db.execute("PRAGMA foreign_keys = ON")
 
     return g.db
 

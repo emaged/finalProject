@@ -124,7 +124,7 @@ def register():
             user_folder = os.path.join(current_app.config['UPLOAD_FOLDER'], username)
             os.makedirs(user_folder, exist_ok=True)
         except sqlite3.IntegrityError:
-            flash(f'User {username} is already registered', 'danger', 'danger')
+            flash(f'User {username} is already registered', 'danger')
             return render_template('register.html')
         except Exception as e:
             flash('Error registering user', 'danger')
@@ -179,7 +179,7 @@ def account():
             flash('Database error, try again later!', 'danger')
             return redirect(request.url)
 
-        return redirect('/')
+        return redirect(url_for('sqlite.index'))
 
     if request.method == 'GET':
         user = query_db('SELECT username FROM users WHERE id = ?',

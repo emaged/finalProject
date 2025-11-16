@@ -13,7 +13,7 @@ CREATE TABLE user_dbs(
   created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   db_title TEXT NOT NULL,
   file_path TEXT NOT NULL,
-  FOREIGN KEY (author_id) REFERENCES user (id) ON DELETE CASCADE,
+  FOREIGN KEY (author_id) REFERENCES users (id) ON DELETE CASCADE,
   UNIQUE(author_id, db_title)
 );
 
