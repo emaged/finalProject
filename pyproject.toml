@@ -15,6 +15,11 @@ dependencies = [
     "python-dotenv (>=1.2.1,<2.0.0)",
     "waitress (>=3.0.2,<4.0.0)"
 ]
+    
+[tool.poetry]
+packages = [
+    { include = "dbbv" }
+]
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
