@@ -24,5 +24,5 @@ def save_history(user_folder, history):
     filepath = os.path.join(user_folder, "query_history.json")
     with open(filepath, "w", encoding="utf8") as f:
         json.dump(history, f, ensure_ascii=False, indent=2)
-    
+
     return history

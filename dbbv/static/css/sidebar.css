@@ -15,17 +15,19 @@
 /*   overflow-y: hidden; */
 /* } */
 
-.dropdown-toggle { outline: 0; }
+.dropdown-toggle {
+  outline: 0;
+}
 
 .btn-toggle {
-  padding: .25rem .5rem;
+  padding: 0.25rem 0.5rem;
   font-weight: 600;
   color: var(--bs-emphasis-color);
   background-color: transparent;
 }
 .btn-toggle:hover,
 .btn-toggle:focus {
-  color: rgba(var(--bs-emphasis-color-rgb), .85);
+  color: rgba(var(--bs-emphasis-color-rgb), 0.85);
   background-color: var(--bs-tertiary-bg);
 }
 
@@ -33,8 +35,8 @@
   width: 1.25em;
   line-height: 0;
   content: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='rgba%280,0,0,.5%29' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M5 14l6-6-6-6'/%3e%3c/svg%3e");
-  transition: transform .35s ease;
-  transform-origin: .5em 50%;
+  transition: transform 0.35s ease;
+  transform-origin: 0.5em 50%;
 }
 
 [data-bs-theme="dark"] .btn-toggle::before {
@@ -42,7 +44,7 @@
 }
 
 .btn-toggle[aria-expanded="true"] {
-  color: rgba(var(--bs-emphasis-color-rgb), .85);
+  color: rgba(var(--bs-emphasis-color-rgb), 0.85);
 }
 .btn-toggle[aria-expanded="true"]::before {
   transform: rotate(90deg);
@@ -54,7 +56,6 @@
 /*   margin-left: 1.25rem; */
 /* } */
 
-
 .btn-toggle-nav a:hover,
 .btn-toggle-nav a:focus {
   background-color: var(--bs-tertiary-bg);
@@ -65,17 +66,18 @@
 }
 
 .sidebar {
-  height: 100vh;                /* Fill full viewport height */
-  overflow-y: auto;             /* Enable vertical scrolling */
-  overflow-x: auto;             /* Hide horizontal overflow */
-  position: sticky;             /* Keep sidebar in view */
-  top: 0;                       /* Needed for sticky */
+  height: 100vh; /* Fill full viewport height */
+  overflow-y: auto; /* Enable vertical scrolling */
+  overflow-x: auto; /* Hide horizontal overflow */
+  position: sticky; /* Keep sidebar in view */
+  top: 0; /* Needed for sticky */
 }
 
-@media (max-width: 575.98px) {  /* Bootstrap sm breakpoint */
+@media (max-width: 575.98px) {
+  /* Bootstrap sm breakpoint */
   .sidebar {
     height: auto;
-    position: relative;  /* stop sticky on mobile */
+    position: relative; /* stop sticky on mobile */
   }
 }
 
@@ -87,7 +89,7 @@
 }
 
 .sidebar td {
-  max-width: 200px;             /* Adjust as needed */
-  white-space: normal;          /* Allow wrapping */
+  max-width: 200px; /* Adjust as needed */
+  white-space: normal; /* Allow wrapping */
   vertical-align: top;
 }

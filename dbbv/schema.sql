@@ -1,19 +1,21 @@
 DROP TABLE IF EXISTS users;
+
 DROP TABLE IF EXISTS user_dbs;
 
-CREATE TABLE users (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  username TEXT UNIQUE NOT NULL,
-  password_hash TEXT NOT NULL
-);
+CREATE TABLE
+  users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT UNIQUE NOT NULL,
+    password_hash TEXT NOT NULL
+  );
 
-CREATE TABLE user_dbs(
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  author_id INTEGER NOT NULL,
-  created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  db_title TEXT NOT NULL,
-  file_path TEXT NOT NULL,
-  FOREIGN KEY (author_id) REFERENCES users (id) ON DELETE CASCADE,
-  UNIQUE(author_id, db_title)
-);
-
+CREATE TABLE
+  user_dbs (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    author_id INTEGER NOT NULL,
+    created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    db_title TEXT NOT NULL,
+    file_path TEXT NOT NULL,
+    FOREIGN KEY (author_id) REFERENCES users (id) ON DELETE CASCADE,
+    UNIQUE (author_id, db_title)
+  );

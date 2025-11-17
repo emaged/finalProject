@@ -24,11 +24,11 @@ body {
   border-top-right-radius: 0;
 }
 
- #togglePassword {
+#togglePassword {
   position: absolute;
   top: 50%;
   right: 15px;
   transform: translateY(-50%);
   cursor: pointer;
-  z-index: 2; 
- }
+  z-index: 2;
+}

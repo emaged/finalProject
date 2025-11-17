@@ -8,6 +8,7 @@ from flask import session
 # beware test files are created and used by multiple functions
 # cleanup is not per function
 
+
 def create_sqlite_file():
     fd, tmp_path = tempfile.mkstemp(suffix=".db")
     os.close(fd)
@@ -29,8 +30,8 @@ def create_sqlite_file():
 
 def create_test_db(client, name="example.db"):
     with client:
-        client.get('/') 
-        user_folder = session['user_folder']
+        client.get("/")
+        user_folder = session["user_folder"]
     os.makedirs(user_folder, exist_ok=True)
 
     path = os.path.join(user_folder, name)
@@ -39,30 +40,30 @@ def create_test_db(client, name="example.db"):
 
 def test_upload(client, auth):
     auth.login()
-    
+
     with client:
         client.get("/")
         user_folder = session["user_folder"]
 
-    data = {
-        "file": (create_sqlite_file(), "example.db")
-    }
-    response = client.post('/upload', data=data, content_type='multipart/form-data', follow_redirects=True)
+    data = {"file": (create_sqlite_file(), "example.db")}
+    response = client.post(
+        "/upload", data=data, content_type="multipart/form-data", follow_redirects=True
+    )
     assert response.status_code == 200
     assert b"This is the files page." in response.data
-    
+
     path = os.path.join(user_folder, "example.db")
     assert os.path.exists(path)
 
 
 def test_download(client, auth):
     auth.login()
-    response = client.get('/download/example.db')
-    
-    assert response.status_code == 200 
+    response = client.get("/download/example.db")
+
+    assert response.status_code == 200
     assert response.data.startswith(b"SQLite format 3")
-    
-    response2 = client.get('/download/example2.db', follow_redirects=True)
+
+    response2 = client.get("/download/example2.db", follow_redirects=True)
     assert response2.status_code == 200
     assert b"File not found" in response2.data
 
@@ -72,24 +73,21 @@ def test_select(client, auth, app):
 
     create_test_db(client)
 
-    response = client.post('/select',
-                           data={
-                               'selected_file': 'example.db'
-                           })
+    response = client.post("/select", data={"selected_file": "example.db"})
     assert response.status_code == 200
-    assert response.is_json 
+    assert response.is_json
     response_data = response.get_json()
     assert isinstance(response_data, list)
-    
+
     with client:
-        client.get('/')
-        expected_data = query_db_sqlite('SELECT * FROM sqlite_master')
-    
+        client.get("/")
+        expected_data = query_db_sqlite("SELECT * FROM sqlite_master")
+
     # Compare names only
     response_names = {row["name"] for row in response_data}
     expected_names = {row["name"] for row in expected_data}
     assert response_names == expected_names
-    
+
 
 def test_removeFile(client, auth):
     auth.login()
@@ -97,38 +95,38 @@ def test_removeFile(client, auth):
         client.get("/")
         user_folder = session["user_folder"]
 
-    filePath = os.path.join(user_folder, "example.db") 
+    filePath = os.path.join(user_folder, "example.db")
     assert os.path.exists(filePath)
 
-    response = client.post('/remove', data={
-        'remove': 'example.db'
-    }, follow_redirects=True)
+    response = client.post(
+        "/remove", data={"remove": "example.db"}, follow_redirects=True
+    )
 
     assert response.status_code == 200
     assert not os.path.exists(filePath)
 
-    response2 = client.post('/remove', data={
-        'remove': 'example2.db'
-    }, follow_redirects=True)
-    
+    response2 = client.post(
+        "/remove", data={"remove": "example2.db"}, follow_redirects=True
+    )
+
     assert response2.status_code == 200
     assert b"The file does not exist" in response2.data
-    
+
 
 def test_create(client, auth):
-    auth.login() 
+    auth.login()
     with client:
-        client.get('/')
-        user_folder = session['user_folder']
+        client.get("/")
+        user_folder = session["user_folder"]
 
-    response = client.post('/create', data={
-         'filename': 'newtest', 
-         'extension': 'db'}, follow_redirects=True)
+    response = client.post(
+        "/create",
+        data={"filename": "newtest", "extension": "db"},
+        follow_redirects=True,
+    )
     assert response.status_code == 200
-    
+
     full_path = os.path.join(user_folder, "newtest.db")
     assert os.path.exists(full_path)
     os.remove(full_path)
     assert not os.path.exists(full_path)
-    
-   
