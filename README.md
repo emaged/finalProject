@@ -1,15 +1,15 @@
-# finalProject
-DataBase Browser Viewer
+
+# DataBase Browser Viewer
+Web app to inspect and change simple sqlite database files.
 
 ## Description
-Web app to inspect and change simple sqlite database files
 
 ## Video Demo
 (Add a screenshot or GIF here showing the app in action.)
 
 ## Tech stack
 - Python 3.12+ 
-- Framework: Flask 3.03+, Bootstrap
+- Framework: Flask, Bootstrap
 - Database: SQLite 
 - Frontend: HTML/CSS/JS 
 
@@ -26,13 +26,45 @@ Prerequisites
 - Python 3.12+
 - Poetry (or pip + venv)
 
-Install dependencies
+Clone the git repo into your directory:
+
+```bash
+git clone https://github.com/emaged/finalProject.git
+```
+
+Install dependencies with poetry:
 ```bash
 poetry install
 ```
 
-Environment
-- Copy `.env.example` to `.env` and fill in required environment variables.
+Alternatively, Install dependencies with pip.
+
+First set up a virtual environment with venv\
+When using linux:
+```bash
+python -m venv .venv
+source .venv/bin/activate
+```
+Or on windows using cmd:
+```cmd
+python -m venv .venv
+.venv\scripts\activate.bat
+```
+
+```bash
+pip install -r requirements.txt
+```
+Or install the development suite
+```bash
+pip install -r requirements-dev.txt
+```
+
+## Environment
+- To set and control environment variables, create a `.env` file in the project directory. For example:
+```bash
+FLASK_APP=dbbv # sets FLASK_APP for executing flask run
+FLASK_DEBUG=1  # sets FLASK_DEBUG to enable debugging. disable for production
+```
 
 Run locally
 ```bash

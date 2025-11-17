@@ -1,9 +1,9 @@
 [project]
-name = "finalproject"
-version = "0.1.0"
-description = ""
+name = "DBBV"
+version = "1.0.0"
+description = "DBBV, DataBase Browser Viewer"
 authors = [
-    {name = "emaged",email = "emieldejonghswemer@gmail.com"}
+    {name = "Emiel de Jongh Swemer",email = "emieldejonghswemer@gmail.com"}
 ]
 readme = "README.md"
 requires-python = ">=3.12"
@@ -15,7 +15,13 @@ dependencies = [
     "python-dotenv (>=1.2.1,<2.0.0)",
     "waitress (>=3.0.2,<4.0.0)"
 ]
-    
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+license = "MIT"
+license-files = ["LICENSE*"]   
+
 [tool.poetry]
 packages = [
     { include = "dbbv" }
@@ -30,7 +36,8 @@ dev = [
     "black (>=25.9.0,<26.0.0)",
     "coverage (>=7.11.0,<8.0.0)",
     "djlint (>=1.36.4,<2.0.0)",
-    "pytest (>=8.4.2,<9.0.0)"
+    "pytest (>=8.4.2,<9.0.0)",
+    "ruff (>=0.14.5,<0.15.0)"
 ]
 
 [tool.pytest.ini_options]
@@ -39,3 +46,19 @@ testpaths = ["tests"]
 [tool.coverage.run]
 branch = true
 source = ["dbbv"]
+
+[tool.black]
+line-length = 88
+
+[tool.ruff]
+line-length = 88
+select = ["E", "F", "W", "C90", "I", "B", "UP", "N"]
+ignore = []
+
+[tool.djlint]
+profile = "jinja"
+indent = 4
+max-line-length = 88
+ignore = []
+extend = true 
+
