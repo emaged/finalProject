@@ -19,7 +19,6 @@ from dbbv.utils.helpers import login_required
 USERNAME_RE = r"^[A-Za-z0-9_-]{3,30}$"
 PASSREG = r"""^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"""
 
-
 bp = Blueprint("auth", __name__)
 
 
@@ -94,8 +93,6 @@ def register():
     # User reached via Post
     if request.method == "POST":
         # ensure username, semi redundant with require but checking for safety
-        error = None
-
         username = request.form.get("username")
         if not username:
             flash("must provide username", "danger")
@@ -144,8 +141,9 @@ def register():
         except sqlite3.IntegrityError:
             flash(f"User {username} is already registered", "danger")
             return render_template("register.html")
-        except Exception as e:
+        except Exception:
             flash("Error registering user", "danger")
+            current_app.logger.exception("Unexpected error registering user")
             return redirect(request.url)
         else:
             return redirect(url_for("auth.login"))
@@ -195,8 +193,10 @@ def account():
                 "UPDATE users SET password_hash = ? WHERE id = ?",
                 (generate_password_hash(new), session["user_id"]),
             )
-        except:
+            raise RuntimeError("forced test exception")
+        except Exception:
             flash("Database error, try again later!", "danger")
+            current_app.logger.exception("Unexpected database error")
             return redirect(request.url)
 
         return redirect(url_for("sqlite.index"))

@@ -52,13 +52,10 @@ line-length = 88
 
 [tool.ruff]
 line-length = 88
-select = ["E", "F", "W", "C90", "I", "B", "UP", "N"]
-ignore = []
 
 [tool.djlint]
 profile = "jinja"
-indent = 4
-max-line-length = 88
+indent = 2
+max_line_length = 88
 ignore = []
-extend = true 
 

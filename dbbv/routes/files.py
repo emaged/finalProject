@@ -161,7 +161,7 @@ def create():
     if not filename or filename == "":
         flash("invalid filename", "dark")
         return redirect(url_for("files.upload"))
-    if not extension in ALLOWED_EXTENSIONS:
+    if extension not in ALLOWED_EXTENSIONS:
         flash("extension not allowed", "dark")
         return redirect(url_for("files.upload"))
 

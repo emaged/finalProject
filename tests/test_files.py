@@ -1,7 +1,7 @@
-import pytest
 import io
-import sqlite3, os, tempfile
-from dbbv.db import get_db
+import sqlite3
+import os
+import tempfile
 from dbbv.routes.sqlite_routes import query_db_sqlite
 from flask import session
 

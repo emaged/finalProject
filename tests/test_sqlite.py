@@ -1,6 +1,3 @@
-import pytest
-
-
 def test_index(client, auth):
     response = client.get("/", follow_redirects=True)
     assert b"Please sign in" in response.data
