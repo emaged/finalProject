@@ -61,6 +61,8 @@ def combined_exec_db_sqlite(query, args=(), one=False, commit=False):
 
 
 def format_query_result(query_result):
+    if query_result is None:
+        return [], None
     if not query_result:
         return [], []
     headers = list(query_result[0].keys())

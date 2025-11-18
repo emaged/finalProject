@@ -53,11 +53,15 @@ def index():
                 flash(e, "danger")
                 return redirect(url_for("sqlite.index"))
 
-            if len(formatted_result) > MAX_RESULT_ROWS:
+            if formatted_result is None:
+                # meaning exactly None
+                rows = [{"status": "Query executed successfully"}]
+            elif not formatted_result:
+                # meaning empty list
+                rows = [{"status": "Query returned no rows"}]
+            elif len(formatted_result) > MAX_RESULT_ROWS:
                 flash("MAX_RESULT_ROWS exceeded, truncated rows 100+", "warning")
                 rows = formatted_result[:MAX_RESULT_ROWS]
-            elif not formatted_result:
-                rows = [{"status": "Query returned no rows"}]
             else:
                 rows = formatted_result
 

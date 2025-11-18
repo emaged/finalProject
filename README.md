@@ -119,7 +119,7 @@ pip install "PATH_TO_YOUR_WHEEL_FILE"
 Or install directly from TestPyPI:
 
 ```bash
-python3 -m pip install --index-url https://test.pypi.org/simple/ --no-deps example-package-YOUR-USERNAME-HERE
+python3 -m pip install --index-url https://test.pypi.org/simple -package-YOUR-USERNAME-HERE
 ```
 
 ## Environment
@@ -201,6 +201,84 @@ pytest
 - dbbv/user_db — functions interacting with the user databases
 - dbbv/utils — utility functions
 - tests/ — automated tests
+
+A short overview of the most important files:
+
+### dbbv/
+
+`__init__.py` \
+Flask app factory; sets defaults, loads config, ensures instance/session dirs, wires CSRF, server-side session cache, core database, and blueprints.
+
+`db.py`\
+Core SQLite helper; opens the main app DB with foreign keys, registers teardown/CLI init, and exposes query_db/execute_db helpers.
+
+`schema.sql`\
+Schema for the built-in user database (users + user_dbs tables with FK enforcement).
+
+### dbbv/routes/
+
+`auth.py`\
+Authentication/account blueprint. Handles register/login/logout, password validation, password change flow, and loading g.user on every request.
+
+`files.py`\ File-management blueprint. Uploads validated SQLite files, lists them, handles download/delete/create, and updates the selected DB in session via AJAX.
+
+`sqlite_routes.py`\ Main query UI. Shows history, schemas, executes arbitrary SQL against the user-selected database, enforces history/result limits, and persists history per user.
+
+`__init__.py`\
+Empty placeholder to mark the package.
+
+### dbbv/static/
+
+`css/sidebar.css`\
+Styles the sidebar collapsible list and schema tables.
+
+`css/sign-in.css`\
+Bootstrap overrides for the login/register forms.
+
+`js/sidebar.js`\
+Client logic for selecting DB files, refreshing schemas, and wiring the delete-file modal (wrapped in DOMContentLoaded with CSRF header handling).
+
+`js/queries.js`\
+Handles removing stored query cards via AJAX, keeping indices in sync, and showing a message when all history is cleared.
+
+`img/…`\
+Logo and favicon assets.
+
+### dbbv/templates/
+
+`layout.html`\
+Base template providing nav, auth-aware layout, flash messaging, modals, scripts, and CSRF meta tag.
+
+`index.html`\
+Query console UI; shows editable query form, history cards, and the clear-history modal.
+
+`files.html`\
+Upload/create databases form plus sidebar layout.
+
+`account.html`\
+Password change form with requirements list.
+
+`login.html`\
+Standalone login page with remember-me and password toggle.
+
+`register.html`\
+Registration page (extends layout) with validation hints.
+
+`sidebar.html`\
+Shared sidebar listing user DB files and dynamic schema tables.
+
+### dbbv/user_db/
+
+`user_sqlite.py`\
+Manages per-user database connections (with caching in g), foreign key PRAGMA, executes queries/mutations, and formats results for display.
+
+### dbbv/utils/
+
+`helpers.py`\
+Misc helpers (auth decorator, upload filters, path helpers, CSRF-safe user folder setup).
+
+`query_history.py`\
+Reads/writes per-user query_history.json with configurable limits on stored queries/results.
 
 ## Project layout
 

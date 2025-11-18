@@ -1,4 +1,4 @@
-{
+document.addEventListener("DOMContentLoaded", () => {
     // check if csrf-token exists
     const meta = document.querySelector('meta[name="csrf-token"]');
     if (!meta) return;
@@ -73,4 +73,4 @@
             });
         });
     }
-}
+});
