@@ -3,7 +3,7 @@ name = "DBBV"
 version = "1.0.0"
 description = "DBBV, DataBase Browser Viewer"
 authors = [
-    {name = "Emiel de Jongh Swemer",email = "emieldejonghswemer@gmail.com"}
+    { name = "Emiel de Jongh Swemer", email = "emieldejonghswemer@gmail.com" },
 ]
 readme = "README.md"
 requires-python = ">=3.12"
@@ -13,19 +13,17 @@ dependencies = [
     "flask-session (>=0.8.0,<0.9.0)",
     "flask-wtf (>=1.2.2,<2.0.0)",
     "python-dotenv (>=1.2.1,<2.0.0)",
-    "waitress (>=3.0.2,<4.0.0)"
+    "waitress (>=3.0.2,<4.0.0)",
 ]
 classifiers = [
     "Programming Language :: Python :: 3",
     "Operating System :: OS Independent",
 ]
 license = "MIT"
-license-files = ["LICENSE*"]   
+license-files = ["LICENSE*"]
 
 [tool.poetry]
-packages = [
-    { include = "dbbv" }
-]
+packages = [{ include = "dbbv" }]
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
@@ -37,7 +35,7 @@ dev = [
     "coverage (>=7.11.0,<8.0.0)",
     "djlint (>=1.36.4,<2.0.0)",
     "pytest (>=8.4.2,<9.0.0)",
-    "ruff (>=0.14.5,<0.15.0)"
+    "ruff (>=0.14.5,<0.15.0)",
 ]
 
 [tool.pytest.ini_options]
@@ -58,4 +56,3 @@ profile = "jinja"
 indent = 2
 max_line_length = 88
 ignore = []
-

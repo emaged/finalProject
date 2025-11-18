@@ -4,6 +4,8 @@ Web app to inspect and change simple sqlite database files.
 
 ## Description
 
+some description
+
 ## Video Demo
 
 (Add a screenshot or GIF here showing the app in action.)
@@ -17,11 +19,13 @@ Web app to inspect and change simple sqlite database files.
 
 ## Features
 
--
--
--
--
--
+- Upload and/or create sqlite databases
+- Run queries to alter/view databases
+- Easy swapping between multiple databases
+- Modern Bootstrap UI
+- View DB schemas for convenient overview of db structure
+- Per user db acces, allowing for safely uploading personal databases
+- Simple account management, just register/login/logout and change password
 
 ## Getting started
 
@@ -59,6 +63,14 @@ python -m venv .venv
 .venv\scripts\activate.bat
 ```
 
+Ensure pip is installed:
+
+```bash
+python -m ensurepip --upgrade
+```
+
+Then install the requirements.txt:
+
 ```bash
 pip install -r requirements.txt
 ```
@@ -71,31 +83,62 @@ pip install -r requirements-dev.txt
 
 ## Environment
 
-- To set and control environment variables, create a `.env` file in the project directory. For example:
+- to set up the main database run:
 
 ```bash
+flask --app dbbv init-db
+```
+
+- To set and control environment variables, create a `.env` file in the project directory. For example:
+
+```python
 FLASK_APP=dbbv # sets FLASK_APP for executing flask run
 FLASK_DEBUG=1  # sets FLASK_DEBUG to enable debugging. disable for production
 ```
 
-Run locally
+setting `FLASK_APP` (and `FLASK_DEBUG` when debugging) is recommended for easier CLI commands
+
+### Don't forget to add a secret key to the /instance/config.py file
+
+To generate a secret key run:
 
 ```bash
-# example - update for your project
-poetry run python -m app         # or `flask run` / `python run.py`
+python -c 'import secrets; print(secrets.token_hex())'
 ```
 
-Run tests
+save this key to your /instance/config.py file:
 
-```bash
-poetry run pytest
+```python
+SECRET_KEY = 'your_generated_secret_key'
 ```
 
-Lint & format
+`MAX_HISTORY_SIZE` is set at 30 for number of queries in memory\
+`MAX_RESULTS_ROWS` is set at 100 for number of rows in query result\
+These settings can be changed in `query_history.py`
+
+```python
+MAX_HISTORY_ITEMS = 30
+MAX_RESULT_ROWS = 100
+```
+
+## Running the application
+
+To run with flasks test server, make sure your venv is activated and run:
 
 ```bash
-poetry run ruff check .
-poetry run black .
+flask run
+```
+
+If you haven't set `FLASK_APP` and `FLASK_DEBUG` use:
+
+```bash
+flask --app dbbv run --debug
+```
+
+Run tests with pytest from the project root:
+
+```bash
+pytest
 ```
 
 ## Project structure
@@ -103,33 +146,79 @@ poetry run black .
 - dbbv/ — application code
 - dbbv/templates/ — HTML templates
 - dbbv/static/ — CSS, JS, images
-- dbbv/user_db —
+- dbbv/user_db — functions interacting with the user databases
 - dbbv/utils — utility functions
 - tests/ — automated tests
 
-## Contribution
+## Project layout
 
-Please see CONTRIBUTING.md for guidelines on contributing.
+```bash
+├── dbbv
+│   ├── __init__.py
+│   ├── __pycache__
+│   ├── db.py
+│   ├── routes
+│   │   ├── __init__.py
+│   │   ├── __pycache__
+│   │   ├── auth.py
+│   │   ├── files.py
+│   │   └── sqlite_routes.py
+│   ├── schema.sql
+│   ├── static
+│   │   ├── css
+│   │   │   ├── sidebar.css
+│   │   │   └── sign-in.css
+│   │   ├── img
+│   │   │   ├── favicon1.ico
+│   │   │   └── logo_final.png
+│   │   └── js
+│   │       ├── queries.js
+│   │       └── sidebar.js
+│   ├── templates
+│   │   ├── account.html
+│   │   ├── files.html
+│   │   ├── index.html
+│   │   ├── layout.html
+│   │   ├── login.html
+│   │   ├── register.html
+│   │   └── sidebar.html
+│   ├── user_db
+│   │   ├── __init__.py
+│   │   ├── __pycache__
+│   │   └── user_sqlite.py
+│   └── utils
+│       ├── __init__.py
+│       ├── __pycache__
+│       ├── helpers.py
+│       └── query_history.py
+├── eslint.config.js
+├── flask_session
+├── instance
+│   ├── config.py
+│   ├── dbbv.sqlite
+│   ├── session_cache
+│   ├── test_user_databases
+│   └── user_databases
+├── LICENSE.md
+├── package-lock.json
+├── package.json
+├── poetry.lock
+├── pyproject.toml
+├── README.md
+├── requirements-dev.txt
+├── requirements.txt
+└── tests
+    ├── __init__.py
+    ├── __pycache__
+    ├── conftest.py
+    ├── data.sql
+    ├── test_auth.py
+    ├── test_db.py
+    ├── test_factory.py
+    ├── test_files.py
+    └── test_sqlite.py
+```
 
 ## License
 
 This project is licensed under the MIT License — see LICENSE.md.
-
-Web app to inspect and change simple sqlite database files
-
-Don't forget to add a secret key to the /instance/config.py file!
-
-for setting the .env file:
-FLASK_APP=dbbv
-if you want debugging enabled
-FLASK_DEBUG=1
-
-to set up the main database run:
-flask --app dbbv init-db
-to generate a secret key run:
-python -c 'import secrets; print(secrets.token_hex())'
-
-save this key to your /instance/config.py file:
-SECRET_KEY = 'your_generated_secret_key'
-
-MAX_HISTORY_SIZE is set at 30 for number of queries in memory
