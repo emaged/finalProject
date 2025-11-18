@@ -4,7 +4,17 @@ Web app to inspect and change simple sqlite database files.
 
 ## Description
 
-some description
+The idea for this application came to me when working on the CS50 fiftyville problem. I was writing SQL queries in the terminal and copying the text to an external editor, and this seemed like an unpractical way to view database queries. So i decided to make a modern web application to easily write queries to any SQLite database and view their results in an ordered and neatly displayed way.
+
+In this short introduction I will quickly go through the functionality of the web app. To set up and run the application, please read the instructions provided below.
+
+First, a user has to create an account. This creates a folder for this user where he can upload his database files to. In this way, every user only has acces to his own database files.
+
+After logging in, the user will be presented with a main page, where he can run and clear his queries, select which database to run queries on, and view the database schemas. The queries are displayed in nice Bootstrap tables, and can be either individually deleted, or be deleted as a group.
+
+On the File Upload page, the user can choose to upload a SQLite database (Only SQLite databases will work, with the .db, .sqlite or .sqlite3 extension), or choose to create a new database with a given filename.
+
+The Account page gives an option to change your password.
 
 ## Video Demo
 
@@ -134,6 +144,17 @@ If you haven't set `FLASK_APP` and `FLASK_DEBUG` use:
 ```bash
 flask --app dbbv run --debug
 ```
+
+### Run with a production server
+
+When running publicly instead of in development, you shouldn't use the built in server `flask run`. Instead, use a production WSGI server.
+For example, to use Waitress (installed as dependency):
+
+```bash
+waitress-serve --call 'dbbv:create_app'
+```
+
+you should see something like `INFO:waitress:Serving on http://0.0.0.0:8080`
 
 Run tests with pytest from the project root:
 
