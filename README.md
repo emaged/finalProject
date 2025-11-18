@@ -4,17 +4,17 @@ Web app to inspect and change simple sqlite database files.
 
 ## Description
 
-The idea for this application came to me when working on the CS50 fiftyville problem. I was writing SQL queries in the terminal and copying the text to an external editor, and this seemed like an unpractical way to view database queries. So i decided to make a modern web application to easily write queries to any SQLite database and view their results in an ordered and neatly displayed way.
+The idea for this application came to me when working on the CS50 Fiftyville problem. I was writing SQL queries in the terminal and copying the results to an external editor, and this seemed like an impractical way to view database queries. So I decided to make a modern web application to easily write queries to any SQLite database and view their results in an organized, neatly displayed way.
 
-In this short introduction I will quickly go through the functionality of the web app. To set up and run the application, please read the instructions provided below.
+In this short introduction, I will quickly go through the functionality of the web app. To set up and run the application, please read the instructions provided below.
 
-First, a user has to create an account. This creates a folder for this user where he can upload his database files to. In this way, every user only has acces to his own database files.
+First, a user has to create an account. This creates a personal folder where they can upload their database files, ensuring each user only has access to their own data.
 
-After logging in, the user will be presented with a main page, where he can run and clear his queries, select which database to run queries on, and view the database schemas. The queries are displayed in nice Bootstrap tables, and can be either individually deleted, or be deleted as a group.
+After logging in, the user will be presented with a main page, where they can run and clear their queries, select which database to run queries on, and view the database schemas. The queries are displayed in Bootstrap tables, and can be deleted individually or cleared as a group.
 
-On the File Upload page, the user can choose to upload a SQLite database (Only SQLite databases will work, with the .db, .sqlite or .sqlite3 extension), or choose to create a new database with a given filename.
+On the File Upload page, the user can choose to upload an SQLite database (only SQLite databases will work, with the `.db`, `.sqlite`, or `.sqlite3` extension), or to create a new database with a given filename.
 
-The Account page gives an option to change your password.
+The Account page provides an option for the user to change their password.
 
 ## Video Demo
 
@@ -33,8 +33,8 @@ The Account page gives an option to change your password.
 - Run queries to alter/view databases
 - Easy swapping between multiple databases
 - Modern Bootstrap UI
-- View DB schemas for convenient overview of db structure
-- Per user db acces, allowing for safely uploading personal databases
+- View DB schemas for convenient overview of DB structure
+- Per user DB acces, allowing for safely uploading personal databases
 - Simple account management, just register/login/logout and change password
 
 ## Getting started
@@ -108,7 +108,7 @@ python3 -m pip install --upgrade build
 python3 -m build
 ```
 
-#### remember to have your venv activated before installing
+#### Remember to activate your venv before installing
 
 locate the `.whl` file (usually under `/dist`) and run:
 
@@ -119,7 +119,7 @@ pip install "PATH_TO_YOUR_WHEEL_FILE"
 Or install directly from TestPyPI:
 
 ```bash
-python3 -m pip install --index-url https://test.pypi.org/simple -package-YOUR-USERNAME-HERE
+pip install -i https://test.pypi.org/simple/ DBBV
 ```
 
 ## Environment
@@ -164,7 +164,7 @@ MAX_RESULT_ROWS = 100
 
 ## Running the application
 
-To run with flasks test server, make sure your venv is activated and run:
+To run with flask's test server, make sure your venv is activated and run:
 
 ```bash
 flask run
@@ -193,7 +193,7 @@ Run tests with pytest from the project root:
 pytest
 ```
 
-coverage is included in the dependencies, to use it run:
+Coverage is included in the dependencies. To use it run:
 
 ```bash
 coverage run -m pytest
@@ -214,6 +214,7 @@ A short overview of the most important files:
 
 ### dbbv/
 
+<details>
 `__init__.py` \
 Flask app factory; sets defaults, loads config, ensures instance/session dirs, wires CSRF, server-side session cache, core database, and blueprints.
 
