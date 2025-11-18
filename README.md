@@ -214,7 +214,6 @@ A short overview of the most important files:
 
 ### dbbv/
 
-<details>
 `__init__.py` \
 Flask app factory; sets defaults, loads config, ensures instance/session dirs, wires CSRF, server-side session cache, core database, and blueprints.
 
