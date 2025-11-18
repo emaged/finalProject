@@ -1,5 +1,9 @@
 {
-    const csrfToken = window.CSRF_TOKEN;
+    // check if csrf-token exists
+    const meta = document.querySelector('meta[name="csrf-token"]');
+    if (!meta) return;
+    const csrfToken = meta.getAttribute("content");
+
     const urlCheck = document.querySelector("#file-route-btn");
     // Only run sidebar logic on pages that include #file-route-btn
     if (urlCheck) {

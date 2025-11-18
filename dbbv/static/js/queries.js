@@ -1,5 +1,8 @@
 {
-    const csrfToken = window.CSRF_TOKEN;
+    // check if csrf-token exists
+    const meta = document.querySelector('meta[name="csrf-token"]');
+    if (!meta) return;
+    const csrfToken = meta.getAttribute("content");
 
     document.querySelectorAll(".btn-remove-query").forEach((btn) => {
         btn.addEventListener("click", async () => {

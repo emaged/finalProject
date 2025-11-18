@@ -22,6 +22,9 @@ classifiers = [
 license = "MIT"
 license-files = ["LICENSE*"]
 
+[project.urls]
+Homepage = "https://github.com/emaged/finalProject"
+
 [tool.poetry]
 packages = [{ include = "dbbv" }]
 

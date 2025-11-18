@@ -164,6 +164,10 @@ def account():
         password_check = query_db(
             "SELECT password_hash FROM users WHERE username = ?", (session["username"],)
         )
+        if not (password_check):
+            flash("Error loading password, try logging out and in again")
+            current_app.logger.error("Error loading password")
+            return redirect(request.url)
 
         if not check_password_hash(password_check[0]["password_hash"], old):
             flash("Old password incorrect", "danger")
@@ -193,7 +197,6 @@ def account():
                 "UPDATE users SET password_hash = ? WHERE id = ?",
                 (generate_password_hash(new), session["user_id"]),
             )
-            raise RuntimeError("forced test exception")
         except Exception:
             flash("Database error, try again later!", "danger")
             current_app.logger.exception("Unexpected database error")

@@ -53,9 +53,10 @@ def is_valid_sqlite(file_obj):
 
 
 def list_user_files():
+    user_folder = check_user_folder()
     files = [
         file
-        for file in listdir(session["user_folder"])
-        if isfile(join(session["user_folder"], file)) and allowed_file(file)
+        for file in listdir(user_folder)
+        if isfile(join(user_folder, file)) and allowed_file(file)
     ]
     return files

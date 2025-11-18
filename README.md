@@ -91,6 +91,37 @@ Or install the development suite
 pip install -r requirements-dev.txt
 ```
 
+### Installing wheel file
+
+It's also possible to directly install the project using pip.
+
+Either build a `.whl` file; from the directory containing pyproject.toml run:
+
+```bash
+poetry build
+```
+
+or
+
+```bash
+python3 -m pip install --upgrade build
+python3 -m build
+```
+
+#### remember to have your venv activated before installing
+
+locate the `.whl` file (usually under `/dist`) and run:
+
+```bash
+pip install "PATH_TO_YOUR_WHEEL_FILE"
+```
+
+Or install directly from TestPyPI:
+
+```bash
+python3 -m pip install --index-url https://test.pypi.org/simple/ --no-deps example-package-YOUR-USERNAME-HERE
+```
+
 ## Environment
 
 - to set up the main database run:

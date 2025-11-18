@@ -62,6 +62,7 @@ def upload():
             file.save(filepath)
         else:
             flash("file (extension) error, wrong file extension", "dark")
+            return redirect(request.url)
 
     files = list_user_files()
     return render_template(
