@@ -193,6 +193,14 @@ Run tests with pytest from the project root:
 pytest
 ```
 
+coverage is included in the dependencies, to use it run:
+
+```bash
+coverage run -m pytest
+coverage report
+coverage html # for a more detailed report
+```
+
 ## Project structure
 
 - dbbv/ — application code
