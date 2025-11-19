@@ -1,4 +1,10 @@
 [project]
+classifiers = [
+    "Programming Language :: Python :: 3.10",
+    "Operating System :: OS Independent",
+    "Framework :: Flask",
+    "License :: MIT License",
+]
 name = "DBBV"
 version = "1.0.0"
 description = "DBBV, DataBase Browser Viewer"
@@ -6,7 +12,7 @@ authors = [
     { name = "Emiel de Jongh Swemer", email = "emieldejonghswemer@gmail.com" },
 ]
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.10"
 dependencies = [
     "cachelib (>=0.13.0,<0.14.0)",
     "flask (>=3.0.3,<4.0.0)",
@@ -14,10 +20,6 @@ dependencies = [
     "flask-wtf (>=1.2.2,<2.0.0)",
     "python-dotenv (>=1.2.1,<2.0.0)",
     "waitress (>=3.0.2,<4.0.0)",
-]
-classifiers = [
-    "Programming Language :: Python :: 3",
-    "Operating System :: OS Independent",
 ]
 license = "MIT"
 license-files = ["LICENSE*"]

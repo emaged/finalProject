@@ -1,5 +1,6 @@
 from flask import (
     Blueprint,
+    current_app,
     flash,
     redirect,
     render_template,
@@ -81,6 +82,11 @@ def index():
 
         elif get_remove:
             popIndex = int(get_remove)
+            if popIndex > len(paired_queries) or popIndex < 0:
+                flash("Error deleting query result", "danger")
+                current_app.logger.error("Out of bounds error from popIndex")
+                return redirect(request.url)
+
             paired_queries.pop(popIndex)
             save_history(user_folder, paired_queries)
 

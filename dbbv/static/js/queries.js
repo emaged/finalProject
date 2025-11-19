@@ -39,7 +39,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     .querySelectorAll(".btn-remove-query")
                     .forEach((btn, index) => {
                         btn.value = index;
-                        console.log(index);
                     });
             } catch (error) {
                 console.error("Error while removing query: ", error);

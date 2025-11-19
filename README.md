@@ -18,7 +18,7 @@ The Account page provides an option for the user to change their password.
 
 ## Video Demo
 
-(Add a screenshot or GIF here showing the app in action.)
+[Video Demonstration](https://youtu.be/7oXRyEvyDjU)
 
 ## Tech stack
 
@@ -34,7 +34,7 @@ The Account page provides an option for the user to change their password.
 - Easy swapping between multiple databases
 - Modern Bootstrap UI
 - View DB schemas for convenient overview of DB structure
-- Per user DB acces, allowing for safely uploading personal databases
+- Per user DB access, allowing for safely uploading personal databases
 - Simple account management, just register/login/logout and change password
 
 ## Getting started

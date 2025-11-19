@@ -3,24 +3,24 @@ import sqlite3
 from flask import (
     Blueprint,
     flash,
+    jsonify,
     redirect,
     render_template,
     request,
     session,
     url_for,
     send_from_directory,
-    jsonify,
 )
 from werkzeug.utils import secure_filename
 from dbbv.utils.helpers import (
     allowed_file,
+    check_user_folder,
+    is_valid_sqlite,
+    list_user_files,
     login_required,
     ALLOWED_EXTENSIONS,
-    is_valid_sqlite,
-    check_user_folder,
-    list_user_files,
 )
-from dbbv.user_db.user_sqlite import query_db_sqlite
+from dbbv.user_db.user_sqlite import can_open, query_db_sqlite
 
 bp = Blueprint("files", __name__)
 
@@ -104,11 +104,16 @@ def select():
         error = "Invalid file type"
         return jsonify({"error": error}), 400
 
-    if not os.path.isfile(os.path.join(session["user_folder"], filename)):
+    filepath = os.path.join(session["user_folder"], filename)
+    if not os.path.isfile(filepath):
         error = "file doesn't exist"
         return jsonify({"error": error}), 400
 
-    session["db_selected"] = filename
+    if can_open(filepath):
+        session["db_selected"] = filename
+    else:
+        error = "not a valid SQLite database"
+        return jsonify({"error": error}), 400
     try:
         schemas = query_db_sqlite("SELECT * FROM sqlite_master")
         return jsonify(schemas)
@@ -156,7 +161,7 @@ def create():
         return redirect(url_for("files.upload"))
     extension = request.form.get("extension")
     if not extension:
-        flash("no extension selected")
+        flash("no extension selected", "dark")
         return redirect(url_for("files.upload"))
     filename = secure_filename(filename)
     if not filename or filename == "":

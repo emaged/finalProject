@@ -165,7 +165,7 @@ def account():
             "SELECT password_hash FROM users WHERE username = ?", (session["username"],)
         )
         if not (password_check):
-            flash("Error loading password, try logging out and in again")
+            flash("Error loading password, try logging out and in again", "danger")
             current_app.logger.error("Error loading password")
             return redirect(request.url)
 
