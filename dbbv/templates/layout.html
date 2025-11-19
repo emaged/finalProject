@@ -23,7 +23,21 @@
           crossorigin="anonymous">
     <link rel="icon"
           type="image/x-icon"
-          href="{{ url_for('static', filename='img/logo_final.png') }}">
+          href="{{ url_for('static', filename='img/favicon/favicon.svg') }}">
+    <link rel="icon"
+          type="image/png"
+          href="{{ url_for('static', filename='img/favicon/favicon-96x96.png') }}"
+          sizes="96x96" />
+    <link rel="icon"
+          type="image/svg+xml"
+          href="{{ url_for('static', filename='img/favicon/favicon.svg') }}" />
+    <link rel="shortcut icon"
+          href="{{ url_for('static', filename='img/favicon/favicon.ico') }}" />
+    <link rel="apple-touch-icon"
+          sizes="180x180"
+          href="{{ url_for('static', filename='img/favicon/apple-touch-icon.png') }}" />
+    <link rel="manifest"
+          href="{{ url_for('static', filename='img/favicon/site.webmanifest') }}" />
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     {% block links %}
@@ -36,8 +50,8 @@
           <a class="navbar-brand" href="{{ url_for('sqlite.index') }}">
             <img src="{{ url_for('static', filename='img/logo_final.png') }}"
                  alt="DBBV Logo"
-                 width="30"
-                 height="30"
+                 width="50"
+                 height="50"
                  class="me-0">
           DBBV</a>
           <button aria-controls="navbar"
