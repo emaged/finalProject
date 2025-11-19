@@ -18,7 +18,6 @@ def create_app(test_config=None):
         # not used but for future setup
         # MAX_CONTENT_LENGTH = 16 * 1024 * 1024,
     )
-    print(app.instance_path)
 
     if test_config is None:
         # load the instance config, if it exists, when not testing

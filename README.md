@@ -101,7 +101,7 @@ Either build a `.whl` file; from the directory containing pyproject.toml run:
 poetry build
 ```
 
-or
+Or
 
 ```bash
 python3 -m pip install --upgrade build
@@ -110,7 +110,7 @@ python3 -m build
 
 #### Remember to activate your venv before installing
 
-locate the `.whl` file (usually under `/dist`) and run:
+Locate the `.whl` file (usually under `/dist`) and run:
 
 ```bash
 pip install "PATH_TO_YOUR_WHEEL_FILE"
@@ -124,20 +124,20 @@ pip install -i https://test.pypi.org/simple/ DBBV
 
 ## Environment
 
-- to set up the main database run:
+To set up the main database run:
 
 ```bash
 flask --app dbbv init-db
 ```
 
-- To set and control environment variables, create a `.env` file in the project directory. For example:
+To set and control environment variables, create a `.env` file in the project directory. For example:
 
 ```python
 FLASK_APP=dbbv # sets FLASK_APP for executing flask run
 FLASK_DEBUG=1  # sets FLASK_DEBUG to enable debugging. disable for production
 ```
 
-setting `FLASK_APP` (and `FLASK_DEBUG` when debugging) is recommended for easier CLI commands
+Setting `FLASK_APP` (and `FLASK_DEBUG` when debugging) is recommended for easier CLI commands
 
 ### Don't forget to add a secret key to the /instance/config.py file
 
@@ -147,7 +147,7 @@ To generate a secret key run:
 python -c 'import secrets; print(secrets.token_hex())'
 ```
 
-save this key to your /instance/config.py file:
+Save this key to your /instance/config.py file:
 
 ```python
 SECRET_KEY = 'your_generated_secret_key'
@@ -185,7 +185,7 @@ For example, to use Waitress (installed as dependency):
 waitress-serve --call 'dbbv:create_app'
 ```
 
-you should see something like `INFO:waitress:Serving on http://0.0.0.0:8080`
+You should see something like `INFO:waitress:Serving on http://0.0.0.0:8080`
 
 Run tests with pytest from the project root:
 
