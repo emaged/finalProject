@@ -76,3 +76,36 @@ def test_logout(client, auth):
 def test_login_required(client, path):
     response = client.post(path)
     assert response.headers["Location"] == "/login"
+
+
+def test_account_get(client, auth):
+    auth.login()
+    res = client.get("/account")
+    assert res.status_code == 200
+    assert b"Account:" in res.data  # page renders for logged-in users
+
+
+def test_account_change_password(client, auth):
+    auth.login()
+    # wrong old password
+    res = client.post(
+        "/account",
+        data={"old": "wrong", "new": "Newpass1!", "confirm": "Newpass1!"},
+        follow_redirects=True,
+    )
+    assert b"Old password incorrect" in res.data
+
+    # correct flow
+    res = client.post(
+        "/account",
+        data={"old": "test", "new": "Newpass1!", "confirm": "Newpass1!"},
+        follow_redirects=True,
+    )
+    assert res.status_code == 200  # redirect back to index
+
+    # verify new password works, old doesn’t
+    auth.logout()
+    bad = auth.login(password="test")
+    assert b"invalid username and/or password" in bad.data
+    good = auth.login(password="Newpass1!")
+    assert good.status_code == 302 and good.headers["Location"] == "/"

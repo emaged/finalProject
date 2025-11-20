@@ -115,7 +115,6 @@ def index():
     else:
         schemas = None
 
-    # replace with session.get in production code for safety
     return render_template(
         "index.html",
         files=files,
