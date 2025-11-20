@@ -3,10 +3,10 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Operating System :: OS Independent",
     "Framework :: Flask",
-    "License :: MIT License",
+    "License :: OSI Approved :: MIT License",
 ]
 name = "DBBV"
-version = "1.0.0"
+version = "1.0.1"
 description = "DBBV, DataBase Browser Viewer"
 authors = [
     { name = "Emiel de Jongh Swemer", email = "emieldejonghswemer@gmail.com" },
