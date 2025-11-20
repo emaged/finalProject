@@ -2,7 +2,7 @@ import io
 import sqlite3
 import os
 import tempfile
-from dbbv.routes.sqlite_routes import query_db_sqlite
+from dbbv.user_db.user_sqlite import query_db_sqlite
 from flask import session
 
 # beware test files are created and used by multiple functions
