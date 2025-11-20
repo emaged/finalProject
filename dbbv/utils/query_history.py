@@ -1,7 +1,7 @@
 import os
 import json
 
-MAX_HISTORY_ITEMS = 30
+MAX_HISTORY_ITEMS = 50
 MAX_RESULT_ROWS = 100
 
 

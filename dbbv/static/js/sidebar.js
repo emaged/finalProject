@@ -1,15 +1,14 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // check if csrf-token exists
     const meta = document.querySelector('meta[name="csrf-token"]');
     if (!meta) return;
     const csrfToken = meta.getAttribute("content");
 
-    const urlCheck = document.querySelector("#file-route-btn");
-    const indexUrlCheck =
-        document.querySelector("#index-route-btn").dataset.fileRoute;
-    // Only run sidebar logic on pages that include #file-route-btn
-    if (!urlCheck) return;
-    const selectUrl = urlCheck.dataset.fileRoute;
+    const fileBtn = document.querySelector("#file-route-btn");
+    const indexBtn = document.querySelector("#index-route-btn");
+    if (!fileBtn || !indexBtn) return; // bail if sidebar isn’t present
+
+    const selectUrl = fileBtn.dataset.fileRoute;
+    const indexUrlCheck = indexBtn.dataset.fileRoute;
 
     function select_db_listener() {
         document.querySelectorAll(".file-btn").forEach((btn) => {
@@ -61,7 +60,6 @@ document.addEventListener("DOMContentLoaded", () => {
                             row.innerHTML = `<td>${key}</td><td>${value}</td>`;
                             tbody.appendChild(row);
                         });
-                        console.log("hello");
                         table.appendChild(tbody);
                         button.appendChild(table);
                         container.appendChild(button);
@@ -87,25 +85,34 @@ document.addEventListener("DOMContentLoaded", () => {
                     return;
                 }
 
-                const query = "SELECT * FROM " + tableName;
+                const query = "SELECT * FROM " + tableName + ";";
                 const selectUrl = indexUrlCheck;
 
                 const formData = new FormData();
                 formData.append("action", "run");
                 formData.append("query", query);
 
-                console.log(formData);
-                console.log(query);
-                console.log(selectUrl);
-
                 const response = await fetch(selectUrl, {
                     method: "POST",
                     headers: { "X-CSRFToken": csrfToken },
                     body: formData,
+                    redirect: "manual", // <--- IMPORTANT
                 });
-                window.location.reload(); // full refresh
 
-                // do something
+                if (!response.ok) {
+                    btn.disabled = false;
+                    console.log("Query failed, response error");
+                    alert("Query Failed!");
+                    return;
+                }
+
+                // Flask returned a redirect → now fetch does NOT follow it → detect it
+                if (response.type === "opaqueredirect" || response.redirected) {
+                    window.location.href = response.url; // full page load
+                    return;
+                } else {
+                    window.location.href = selectUrl;
+                }
             });
         });
     }

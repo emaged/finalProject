@@ -18,19 +18,17 @@ document.addEventListener("DOMContentLoaded", () => {
                     body: formData,
                 });
 
-                const emptyList = await response.text();
+                const emptyList = await response.json();
 
                 if (!response.ok) {
-                    console.error(
-                        "Server failed to remove query: ",
-                        response.statusText,
-                    );
-                    alert("Failed to remove query on server.");
+                    const msg = emptyList.error;
+                    console.error("Server failed to remove query: " + msg);
+                    alert("Failed to remove query on server: " + msg);
                     return;
                 }
 
                 btn.closest(".col").remove(); // remove only after successful server update
-                if (emptyList === "1")
+                if (emptyList.empty)
                     document.querySelector(".queryInput").innerHTML =
                         "You deleted the last query";
 

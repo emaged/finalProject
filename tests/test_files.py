@@ -14,7 +14,8 @@ def create_sqlite_file():
     os.close(fd)
     conn = sqlite3.connect(tmp_path)
     # WARNING does not delete old table t if it exists in the user folder
-    conn.execute("CREATE TABLE t (id INTEGER PRIMARY KEY, descr TEXT)")
+    conn.execute("DROP TABLE IF EXISTS t")
+    conn.execute("CREATE TABLE IF NOT EXISTS t (id INTEGER PRIMARY KEY, descr TEXT)")
     conn.execute("INSERT INTO t(descr) VALUES ('first')")
     conn.execute("INSERT INTO t(descr) VALUES ('second')")
     conn.execute("INSERT INTO t(descr) VALUES ('third')")
@@ -28,14 +29,14 @@ def create_sqlite_file():
     return bio
 
 
-def create_test_db(client, name="example.db"):
+def create_test_db(client, name="example2.db"):
     with client:
         client.get("/")
         user_folder = session["user_folder"]
-    os.makedirs(user_folder, exist_ok=True)
 
-    path = os.path.join(user_folder, name)
-    sqlite3.connect(path).close()
+        os.makedirs(user_folder, exist_ok=True)
+        path = os.path.join(user_folder, name)
+        sqlite3.connect(path).close()
 
 
 def test_upload(client, auth):
@@ -58,12 +59,13 @@ def test_upload(client, auth):
 
 def test_download(client, auth):
     auth.login()
+
     response = client.get("/download/example.db")
 
     assert response.status_code == 200
     assert response.data.startswith(b"SQLite format 3")
 
-    response2 = client.get("/download/example2.db", follow_redirects=True)
+    response2 = client.get("/download/not_exists.db", follow_redirects=True)
     assert response2.status_code == 200
     assert b"File not found" in response2.data
 
@@ -71,7 +73,7 @@ def test_download(client, auth):
 def test_select(client, auth, app):
     auth.login()
 
-    create_test_db(client)
+    # create_test_db(client)
 
     response = client.post("/select", data={"selected_file": "example.db"})
     assert response.status_code == 200
@@ -95,11 +97,13 @@ def test_removeFile(client, auth):
         client.get("/")
         user_folder = session["user_folder"]
 
-    filePath = os.path.join(user_folder, "example.db")
+    create_test_db(client, "example2.db")
+
+    filePath = os.path.join(user_folder, "example2.db")
     assert os.path.exists(filePath)
 
     response = client.post(
-        "/remove", data={"remove": "example.db"}, follow_redirects=True
+        "/remove", data={"remove": "example2.db"}, follow_redirects=True
     )
 
     assert response.status_code == 200

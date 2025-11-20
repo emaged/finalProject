@@ -71,10 +71,8 @@ def format_query_result(query_result):
 
 def can_open(path):
     try:
-        conn = sqlite3.connect(path)
-        conn.execute("PRAGMA schema_version;")  # forces a read
+        with sqlite3.connect(path) as conn:
+            conn.execute("PRAGMA schema_version;")  # forces a read
     except sqlite3.Error:
         return False
-    finally:
-        conn.close()
     return True

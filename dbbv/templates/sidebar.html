@@ -51,17 +51,19 @@
       <div class="collapse" id="dashboard-collapse">
         {% if schemas %}
           {% for schema in schemas %}
-            <button class="btn p-0 border-0 btn-schema }} " value="{{ schema['name'] }}">
-              <table class="table table-striped border overflow-auto">
-                <tbody>
-                  {% for key, value in schema.items() %}
-                    <tr>
-                      <td>{{ key }}</td>
-                      <td>{{ value }}</td>
-                    </tr>
-                  {% endfor %}
-                </tbody>
-              </table>
+            <button class="btn p-0 border-0 btn-schema"  value="{{ schema['name'] }}">
+              <div>
+                <table class="table table-striped border overflow-auto">
+                  <tbody>
+                    {% for key, value in schema.items() %}
+                      <tr>
+                        <td>{{ key }}</td>
+                        <td>{{ value }}</td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
             </button>
           {% endfor %}
         {% endif %}

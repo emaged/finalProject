@@ -20,6 +20,7 @@ dependencies = [
     "flask-wtf (>=1.2.2,<2.0.0)",
     "python-dotenv (>=1.2.1,<2.0.0)",
     "waitress (>=3.0.2,<4.0.0)",
+    "sqlparse (>=0.5.3,<0.6.0)",
 ]
 license = "MIT"
 license-files = ["LICENSE*"]
